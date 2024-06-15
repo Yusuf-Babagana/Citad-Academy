@@ -197,14 +197,6 @@ CKEDITOR_CONFIGS = {
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
 
-# AWS S3 settings
-# AWS_ACCESS_KEY_ID = 'AKIASBHOTBRRQEGPP64I'
-# AWS_SECRET_ACCESS_KEY = '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'
-# AWS_STORAGE_BUCKET_NAME = 'iexamsbucket'
-# AWS_S3_REGION_NAME = 'eu-north-1'  # Adjust the region as necessary
-# AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
-
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -231,19 +223,10 @@ MEDIA_ROOT = BASE_DIR / 'media_files'
 
 
 
-# Static files (CSS, JavaScript, Images) - S3 configuration
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/static/'
-
 # Use Path for STATIC_ROOT and check if 'staticfiles' is already part of BASE_DIR
 # Note: STATIC_ROOT is not used when STATICFILES_STORAGE is set to an S3 backend
 # STATIC_ROOT = BASE_DIR / 'staticfiles' if 'staticfiles' not in str(BASE_DIR) else BASE_DIR / 'staticfiles'
 
-# Use Path for STATICFILES_DIRS
-
-# To store media files on S3
-# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
