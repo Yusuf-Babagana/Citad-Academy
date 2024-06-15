@@ -1,0 +1,331 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block custom_head %}
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+{% endblock custom_head %}
+
+{% block content %}
+    
+        <!-- Display Current Profile Image if it exists -->
+        <div class="profile-image-section">
+            {% if request.user.profile_image %}
+                <img src="{{ request.user.profile_image.url }}" alt="Profile Image" class="profile-image">
+            {% endif %}
+        </div>
+
+        <!-- Profile Image Upload Form -->
+        <form method="post" enctype="multipart/form-data" class="profile-image-form">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ profile_image_form.profile_image.label_tag }}
+                {{ profile_image_form.profile_image }}
+                {% if profile_image_form.profile_image.help_text %}
+                    <small class="form-text text-muted">{{ profile_image_form.profile_image.help_text }}</small>
+                {% endif %}
+                {% if profile_image_form.profile_image.errors %}
+                    <div class="error">{{ profile_image_form.profile_image.errors }}</div>
+                {% endif %}
+            </div>
+            <button type="submit" name="profile_image_submit" class="btn btn-primary">Update Profile Image</button>
+        </form>
+
+        </div>
+
+        <h1>Welcome, {{ request.user.username }}!</h1>
+            
+            
+            <!-- Display the school name -->
+            <div class="mb-3">
+                <h3>School: {{ school.name }}</h3>
+            </div>
+
+    <div class="accordion" id="teacherDashboardAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingAssignedSubjects">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#assigned_subjects" aria-expanded="true" aria-controls="assigned_subjects">
+                    Assigned Subjects
+                </button>
+            </h2>
+            <div id="assigned_subjects" class="accordion-collapse collapse show" aria-labelledby="headingAssignedSubjects" data-bs-parent="#teacherDashboardAccordion">
+                <!-- Assigned Subjects content here -->
+                <h2>Assigned Subjects</h2>
+                <ul>
+                {% for subject in subjects %}
+                    <li>{{ subject.name }}</li>
+                {% empty %}
+                    <li>No subjects assigned.</li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingCreateTopic">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#create_topic" aria-expanded="false" aria-controls="create_topic">
+                    Create Topic
+                </button>
+            </h2>
+            <div id="create_topic" class="accordion-collapse collapse" aria-labelledby="headingCreateTopic" data-bs-parent="#teacherDashboardAccordion">
+                <!-- Create Topic content here -->
+                <h2>Create Topic</h2>
+                <!-- Add form to create topic here -->
+                <form method="post">
+                    {% csrf_token %}
+                    {{ topic_form.as_p }}
+                    <button type="submit" class="btn btn-primary" name="topic_submit">Create Topic</button>
+                </form>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingCreateSubTopic">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#create_subtopic" aria-expanded="false" aria-controls="create_subtopic">
+                    Create SubTopic
+                </button>
+            </h2>
+            <div id="create_subtopic" class="accordion-collapse collapse" aria-labelledby="headingCreateSubTopic" data-bs-parent="#teacherDashboardAccordion">
+                <!-- Create SubTopic content here -->
+                <h2>Create SubTopic</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ subtopic_form.as_p }}
+                    <button type="submit" class="btn btn-primary" name="subtopic_submit">Create SubTopic</button>
+                </form>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingCreateExam">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#create_exam" aria-expanded="false" aria-controls="create_exam">
+                    Create Exam
+                </button>
+            </h2>
+            <div id="create_exam" class="accordion-collapse collapse" aria-labelledby="headingCreateExam" data-bs-parent="#teacherDashboardAccordion">
+                <!-- Create Exam content here -->
+                <h2>Create Exam</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ exam_form.as_p }}
+                    <button type="submit" class="btn btn-primary" name="exam_submit">Create Exam</button>
+                </form>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingMyExams">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#my_exams" aria-expanded="false" aria-controls="my_exams">
+                    My Exams
+                </button>
+            </h2>
+            <div id="my_exams" class="accordion-collapse collapse" aria-labelledby="headingMyExams" data-bs-parent="#teacherDashboardAccordion">
+                <!-- My Exams content here -->
+                <h2>My Created Exams</h2>
+                <ul>
+                    {% for exam in exams %}
+                        <li>
+                            {{ exam.subject.name }} - {{ exam.teacher.user.username }} -
+                            {% if exam.is_published %}
+                                Published
+                            {% else %}
+                                Not Published - 
+                                <a href="{% url 'exam_management:manage_exam' exam.id %}">Manage Exam</a>
+                                <a href="{% url 'exam_management:edit_exam' exam.id %}">Edit Exam</a> - <!-- New Edit Exam link -->
+                                <a href="{% url 'user_management:publish-exam' exam.id %}">Publish</a>
+                            {% endif %}
+                        </li>
+                    {% empty %}
+                        <li>No exams created yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingUploadMedia">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#upload_media" aria-expanded="false" aria-controls="upload_media">
+                    Upload Media
+                </button>
+            </h2>
+            <div id="upload_media" class="accordion-collapse collapse" aria-labelledby="headingUploadMedia" data-bs-parent="#teacherDashboardAccordion">
+                <!-- Upload Media content here -->
+                <h2>Upload Media</h2>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ media_form.as_p }}
+                    <button type="submit" class="btn btn-primary" name="media_submit">Upload Media</button>
+                </form>
+                <ul>
+                    {% for media_item in media_items %}
+                        <li>
+                            <a href="{% url 'media_management:view_media' media_item.id %}">{{ media_item.title }}</a>
+                            {% if media_item.file_type == 'pdf' %}
+                            <object data="{{ media_item.file.url }}" type="application/pdf" width="100px" height="150px"></object>
+                            {% elif media_item.file_type == 'image' %}
+                            <img src="{{ media_item.file.url }}" alt="{{ media_item.title }}" width="100px">
+                            {% elif media_item.file_type == 'video' %}
+                            <video controls width="100px">
+                                <source src="{{ media_item.file.url }}" type="video/mp4">
+                            </video>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingPublishedExams">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#published_exams" aria-expanded="false" aria-controls="published_exams">
+                    Published Exams
+                </button>
+            </h2>
+            <div id="published_exams" class="accordion-collapse collapse" aria-labelledby="headingPublishedExams" data-bs-parent="#teacherDashboardAccordion">
+                <!-- Published Exams content here -->
+                <h2>My Published Exams</h2>
+                <ul>
+                {% for exam in published_exams %}
+                    <li>
+                        {{ exam.subject.name }} - {{ exam.teacher.user.username }} - Published
+                        <a href="{% url 'exam_management:manage_exam' exam.id %}">Manage Exam</a>
+                        <a href="{% url 'exam_management:edit_exam' exam.id %}">Edit Exam</a>
+                    </li>
+                {% empty %}
+                    <li>No exams published yet.</li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboards -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingLeaderboards">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLeaderboards" aria-expanded="false" aria-controls="collapseLeaderboards">
+                Leaderboards
+            </button>
+        </h2>
+        <div id="collapseLeaderboards" class="accordion-collapse collapse" aria-labelledby="headingLeaderboards" data-bs-parent="#schoolAdminAccordion">
+            <!-- Leaderboards content here -->
+                    <h3>Class Leaderboards</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Class</th>
+                        <th>Student</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for leaderboard in class_leaderboards %}
+                        <tr>
+                            <td>{{ leaderboard.classroom.name }}</td>
+                            <td>{{ leaderboard.student.user.username }}</td>
+                            <td>{{ leaderboard.score }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="3">No class leaderboard entries at this time.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Subject Leaderboards Section -->
+            <h3>Subject Leaderboards</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Student</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for leaderboard in subject_leaderboards %}
+                        <tr>
+                            <td>{{ leaderboard.subject.name }}</td>
+                            <td>{{ leaderboard.student.user.username }}</td>
+                            <td>{{ leaderboard.score }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="3">No subject leaderboard entries at this time.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+                <h2 class="accordion-header" id="headingManualEntry">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#manual_entry" aria-expanded="false" aria-controls="manual_entry">
+                        Manual Entry
+                    </button>
+                </h2>
+            <div id="manual_entry" class="accordion-collapse collapse" aria-labelledby="headingManualEntry" data-bs-parent="#teacherDashboardAccordion">
+                    
+                    <h2>Manual Entries</h2>
+                    <div>                
+                        <a href="{% url 'exam_management:enter_manual_score' %}" class="btn btn-primary">Enter Manual Scores</a>
+                    </div>
+
+                    
+                        <!-- Include StudentPerformanceForm -->
+                    <form method="post" action="{% url 'user_management:teacher-dashboard' %}">
+                        {% csrf_token %}
+                        {{ student_performance_form.as_p }}
+                        <button type="submit" name="student_performance_submit">Save Student Performance</button>
+                    </form>
+                    
+                    <!-- Include StudentActivityForm -->
+                    <form method="post" action="{% url 'user_management:teacher-dashboard' %}">
+                        {% csrf_token %}
+                        {{ student_activity_form.as_p }}
+                        <button type="submit" name="student_activity_submit">Save Student Activity</button>
+                    </form>
+                    
+                    <!-- Include BehavioralAssessmentForm -->
+                    <form method="post" action="{% url 'user_management:teacher-dashboard' %}">
+                        {% csrf_token %}
+                        {{ behavioral_assessment_form.as_p }}
+                        <button type="submit" name="behavioral_assessment_submit">Save Behavioral Assessment</button>
+                    </form>     
+            </div>
+        </div>
+       <!-- Performance Accordion Section -->
+<div class="accordion-item">
+    <h2 class="accordion-header" id="headingPerformance">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#performance" aria-expanded="false" aria-controls="performance">
+            Student Performance
+        </button>
+    </h2>
+    <div id="performance" class="accordion-collapse collapse" aria-labelledby="headingPerformance" data-bs-parent="#teacherDashboardAccordion">
+        <div class="accordion-body">
+            <!-- Performance content will go here -->
+            {% for class in classes %}
+                <div>
+                    <h3>Performance for {{ class.name }}</h3>
+                    {% for performance in performances %}
+                        {% if performance.student.enrolled_class_id == class.id %}
+                            <div>
+                                
+                                <p>Student: <a href="{% url 'performance_tracking:generate_report_card_view' student_id=performance.student.id %}">{{ performance.student.user.get_full_name }}</a></p>
+                                
+                            </div>
+                        {% endif %}
+                    {% empty %}
+                        <p>No performance data available for {{ class.name }}.</p>
+                    {% endfor %}
+                </div>
+            {% empty %}
+                <p>No classes assigned.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+    
+
+        {% block custom_js %}
+            <!-- Bootstrap JS, Popper.js -->
+            <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+        {% endblock custom_js %}
+ {% endblock content %}
+

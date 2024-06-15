@@ -1,0 +1,21 @@
+{% extends "base_generic.html" %}
+{% block content %}
+<div class="container">
+    <h2>Media in "{{ category_detail.name }}"</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
+        {% for media in media_files %}
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ media.title }}</h5>
+                        <!-- Additional media details here -->
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'media_management:view_media' media.id %}" class="btn btn-primary">View Media</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

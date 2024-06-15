@@ -1,0 +1,16 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+  <h2>Exam Result</h2>
+  <p>Your Score: {{ student_exam.score }}</p>
+  <p>Total Questions: {{ student_exam.exam.questions.count }}</p>
+  {% for answer in student_exam.answers.all %}
+    <p>
+      {{ answer.question.question_text }}
+      <br>
+      Your Answer: {{ answer.get_selected_option_display }}
+      <br>
+      Correct Answer: {{ answer.question.correct_option }}
+    </p>
+  {% endfor %}
+{% endblock %}

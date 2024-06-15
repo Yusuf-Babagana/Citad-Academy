@@ -1,0 +1,41 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <h1>Enrollment Request Details</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">
+                {% if enrollment_request.student %}
+                    {{ enrollment_request.student.user.get_full_name|default:enrollment_request.student.user.username }}
+                {% else %}
+                    {{ enrollment_request.teacher.user.get_full_name|default:enrollment_request.teacher.user.username }}
+                {% endif %}
+            </h5>
+            <p class="card-text">
+                Course/Field: 
+                {% if enrollment_request.student %}
+                    {{ enrollment_request.student.class_or_department }}
+                {% else %}
+                    {{ enrollment_request.teacher.field_of_study }}
+                {% endif %} <br>
+                Status: {{ enrollment_request.get_status_display }} <br>
+                School: {{ enrollment_request.school.name }} <br>
+                <!-- Add more details as needed -->
+            </p>
+            <form method="post" action="{% url 'student:enrollment-request-detail' enrollment_request.id %}">
+                {% csrf_token %}
+                <button type="submit" name="action" value="approve" class="btn btn-success">Approve</button>
+                <button type="submit" name="action" value="reject" class="btn btn-danger">Reject</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

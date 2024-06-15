@@ -1,0 +1,13 @@
+{% extends "base_generic.html" %}
+{% block content %}
+<div class="container">
+    <h2>Media Categories</h2>
+    <div class="list-group mt-3">
+        {% for category_type in category_types %}
+            <a href="{% url 'media_management:list_category_details' category_type.id %}" class="list-group-item list-group-item-action">
+                {{ category_type.name }}
+            </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

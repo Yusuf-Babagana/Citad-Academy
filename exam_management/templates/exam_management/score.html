@@ -1,0 +1,40 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<a class="btn btn-primary" href="{% url 'user_management:student-dashboard' %}">Back to Dashboard</a>
+<div class="container py-5">
+    <h1 class="text-center mb-5">Exam Score</h1>
+    
+    <div class="border p-4 mb-4">
+        <p><strong>Exam:</strong> {{ student_exam.exam.subject.name }}</p>
+        <p><strong>Score:</strong> {{ student_exam.score }} / {{ student_exam.exam.questions.count }}</p>
+        <p><strong>Percentage:</strong> {{ score_percentage }}%</p>
+        <p><strong>Time spent:</strong> {{ time_spent }}</p>
+    </div>
+
+    <h2 class="mb-4">Review Incorrect Answers</h2>
+    <h3>By Topic</h3>
+    {% for topic, answers in incorrect_by_topic.items %}
+        <h4>{{ topic.name }}</h4>
+        {% for answer in answers %}
+        <div class="border p-4 mb-4">
+            <p><strong>Question:</strong> {{ answer.question.question_text }}</p>
+            <p><strong>Your answer:</strong> Option {{ answer.selected_option_letter }}: {{ answer.get_selected_option_display }}</p>
+            <p><strong>Correct answer:</strong> Option {{ answer.correct_option_letter }}: {{ answer.question.get_correct_option_display }}</p>
+        </div>
+        {% endfor %}
+    {% endfor %}
+
+    <h3>By Subtopic</h3>
+    {% for subtopic, answers in incorrect_by_subtopic.items %}
+        <h4>{{ subtopic.name }}</h4>
+        {% for answer in answers %}
+        <div class="border p-4 mb-4">
+            <p><strong>Question:</strong> {{ answer.question.question_text }}</p>
+            <p><strong>Your answer:</strong> Option {{ answer.selected_option_letter }}: {{ answer.get_selected_option_display }}</p>
+            <p><strong>Correct answer:</strong> Option {{ answer.correct_option_letter }}: {{ answer.question.get_correct_option_display }}</p>
+        </div>
+        {% endfor %}
+    {% endfor %}
+</div>
+{% endblock content %}

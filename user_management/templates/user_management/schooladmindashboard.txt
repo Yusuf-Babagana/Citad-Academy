@@ -1,0 +1,264 @@
+
+         <!-- Class Creation Form Tab Pane -->
+<div class="tab-pane fade" id="class" role="tabpanel" aria-labelledby="class-tab">
+    <form method="post" class="mt-3" id="createClassForm">
+        {% csrf_token %}
+        <div class="row">
+            {% for field in class_form %}
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field|add_class:"form-control" }}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <button type="submit" name="class_submit" class="btn btn-primary">Create Class</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Add this JavaScript code to your page -->
+<script type="text/javascript">
+    document.getElementById("createClassForm").onsubmit = function () {
+        return confirm("Are you sure you want to create a new class?");
+    };
+</script>
+
+         <!-- Assign Teacher Form Tab Pane -->
+<div class="tab-pane fade" id="assign-teacher" role="tabpanel" aria-labelledby="assign-teacher-tab">
+    <form method="post" class="mt-3" id="assignTeacherForm">
+        {% csrf_token %}
+        <div class="row">
+            {% for field in assign_teacher_form %}
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field|add_class:"form-control" }}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger mt-2">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <button type="submit" name="assign_teacher_submit" class="btn btn-primary">Assign Teacher</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Add this JavaScript code to your page -->
+<script type="text/javascript">
+    document.getElementById("assignTeacherForm").onsubmit = function () {
+        return confirm("Are you sure you want to assign a teacher?");
+    };
+</script>
+
+       <!-- Enrollment Requests Tab Pane -->
+<div class="tab-pane fade" id="requests" role="tabpanel" aria-labelledby="requests-tab">
+    <form method="post" action="{% url 'user_management:school-admin-dashboard' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <select name="action">
+                <option value="approve">Approve Selected</option>
+                <option value="reject">Reject Selected</option>
+            </select>
+            <button type="submit" class="btn btn-success">Apply Action to Selected</button>
+        </div>
+        {% for request in pending_requests %}
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <!-- Checkboxes to select multiple requests -->
+                        <input type="checkbox" name="selected_requests" value="{{ request.id }}" class="me-2">
+                        
+                        {% if request.student %}
+                            {% if request.student.user.first_name and request.student.user.last_name %}
+                                {{ request.student.user.first_name }} {{ request.student.user.last_name }}
+                            {% else %}
+                                {{ request.student.user.username }}
+                            {% endif %}
+                            - Class/Department: {{ request.student.class_or_department }}
+                        {% else %}
+                            {% if request.teacher.user.first_name and request.teacher.user.last_name %}
+                                {{ request.teacher.user.first_name }} {{ request.teacher.user.last_name }}
+                            {% else %}
+                                {{ request.teacher.user.username }}
+                            {% endif %}
+                            - Field of Study: {{ request.teacher.field_of_study }}
+                        {% endif %}
+                    </h5>
+                    <a href="{% url 'student:enrollment-request-detail' pk=request.id %}" class="btn btn-info">View Details</a>
+                </div>
+            </div>
+        {% empty %}
+            <p class="mt-3">No pending enrollment requests.</p>
+        {% endfor %}
+    </form>
+</div>
+
+         <!-- Subject Creation Form Tab Pane -->
+<div class="tab-pane fade" id="subject" role="tabpanel" aria-labelledby="subject-tab">
+    <form method="post" class="row g-3 mt-3">
+        {% csrf_token %}
+        {% for field in subject_form %}
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    {{ field|add_class:"form-control" }}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger mt-2">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+        <div class="col-12">
+            <button type="submit" name="subject_submit" class="btn btn-primary">Create Subject</button>
+        </form>
+    </div>
+</div>
+
+        <!-- Leaderboards Tab Pane -->
+<div class="tab-pane fade" id="leaderboards" role="tabpanel" aria-labelledby="leaderboards-tab">
+    <!-- Class Leaderboards Section -->
+    <h3>Class Leaderboards</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Class</th>
+                <th>Student</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for leaderboard in class_leaderboards %}
+                <tr>
+                    <td>{{ leaderboard.classroom.name }}</td>
+                    <td>{{ leaderboard.student.user.username }}</td>
+                    <td>{{ leaderboard.score }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">No class leaderboard entries at this time.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Subject Leaderboards Section -->
+    <h3>Subject Leaderboards</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Student</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for leaderboard in subject_leaderboards %}
+                <tr>
+                    <td>{{ leaderboard.subject.name }}</td>
+                    <td>{{ leaderboard.student.user.username }}</td>
+                    <td>{{ leaderboard.score }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">No subject leaderboard entries at this time.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+                <!-- Users Tab Pane -->
+<div class="tab-pane fade" id="users" role="tabpanel" aria-labelledby="users-tab">
+    <div class="mt-3">
+        <h2>Teachers</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Subjects</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for teacher in teachers %}
+                    <tr>
+                        <td>{{ teacher.user.username }}</td>
+                        <td>{{ teacher.field_of_study }}</td>
+                        <td>{{ teacher.is_approved|yesno:"Approved,Not Approved" }}</td>
+                        <td>{{ teacher.classes.all|join:", " }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="2">No teachers enrolled yet.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="mt-3">
+        <h2>Students</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Class</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                    <tr>
+                        <td>{{ student.user.username }}</td>
+                        <td>{{ student.enrolled_class }}</td>
+                        <td>{{ student.class_or_department }}</td>
+                        <td>{{ student.subjects.all|join:", " }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="2">No students enrolled yet.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+             <!-- Assign Student Form Tab Pane -->
+<div class="tab-pane fade" id="assign-student" role="tabpanel" aria-labelledby="assign-student-tab">
+    <form method="post" class="mt-3">
+        {% csrf_token %}
+        {% for field in assign_student_form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                {{ field|add_class:"form-control" }}
+                {% for error in field.errors %}
+                    <div class="alert alert-danger mt-2">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <button type="submit" name="assign_student_submit" class="btn btn-primary">Assign Student</button>
+    </form>
+</div>
+
+</div>
+</div>

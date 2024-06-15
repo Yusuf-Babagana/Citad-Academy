@@ -1,0 +1,11 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+<h1>Students in Class {{ class_id }}</h1>
+<ul>
+    {% for student in students %}
+    <li>
+        <a href="{% url 'student_detail' student.id %}">{{ student.user.get_full_name }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

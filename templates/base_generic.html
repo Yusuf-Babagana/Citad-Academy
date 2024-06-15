@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}iExam{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <!-- Include your CSS stylesheet using the  template tag -->
+    <link rel="canonical" href="{{request.path}}"/>
+    <meta name="description" content="{% block description %}{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}{% endblock %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'bootstrap/media/logo.png' %}">
+    <link rel="apple-touch-icon" type="image/jpg" href="{% static 'bootstrap/media/logo.png' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'website/style.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap/css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7.0.5/swiper-bundle.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+   
+    <!-- ================================
+    End CSS
+    ================================= -->
+</head>
+<body>
+      <!-- Navigation bar -->
+      <nav class="navbar navbar-expand-lg navbar-custom position-sticky top-0">
+      <div class="container">
+        <!-- Logo Section -->
+        <a class="navbar-brand" href="#">
+          <div class="logo-image">
+              <img src="{% static 'bootstrap/media/iExam2.png' %}" alt="Logo">
+          </div>
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href='{% url "user_management:index" %}'>Home</a>
+            </li>
+            
+            {% if request.user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'user_management:logout' %}">Logout</a>
+              </li>
+              <li class="nav-item">
+                {% if request.user.role == "SA" %}
+                  <a class="nav-link" href="{% url 'user_management:school-admin-dashboard' %}">Dashboard</a>
+                {% elif request.user.role == "T" %}
+                  <a class="nav-link" href="{% url 'user_management:teacher-dashboard' %}">Dashboard</a>
+                {% elif request.user.role == "S" %}
+                  <a class="nav-link" href="{% url 'user_management:student-dashboard' %}">Dashboard</a>
+                {% elif request.user.role == "A" %}
+                  <a class="nav-link" href="{% url 'user_management:admin-dashboard' %}">Dashboard</a>
+                {% elif request.user.role == "IL" %}
+                  <a class="nav-link" href="{% url 'user_management:independent_learner_dashboard' %}">Dashboard</a>
+                {% endif %}
+              </li>
+            {% else %}
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Register
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="{% url 'user_management:register_school_admin' %}">School</a></li>
+                  <li><a class="dropdown-item" href="{% url 'user_management:register_independent_learner' %}">Independent Learner</a></li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'user_management:login' %}">Login</a>
+              </li>
+            {% endif %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'resource:resource_list' %}">Resource</a> 
+              <li class="nav-item">
+                
+              </li>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container mt-4 custom-container">
+        {% block content %}
+        <!-- The content of the child template will be inserted here -->
+        {% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Include TinyMCE Script -->
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <!-- TinyMCE Wiris Plugin -->
+    <script src="https://www.wiris.net/demo/plugins/tiny_mce/plugin.js"></script>
+
+    {% block extra_js %}
+    <!-- Extra JavaScript will be added here by child templates -->
+    {% endblock %}
+</body>
+</html>

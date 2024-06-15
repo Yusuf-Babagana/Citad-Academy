@@ -1,0 +1,59 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+{% if messages %}
+    <div class="container mt-4">
+        {% for message in messages %}
+            {% if message.level_tag == 'success' %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-5">
+            <div class="card border-light shadow-lg p-3 mb-5 bg-white rounded">
+                <div class="card-body">
+                    <h1 class="text-center">Login</h1>
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field|add_class:"form-control" }}
+                            {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                            {% endif %}
+                            {% for error in field.errors %}
+                            <div class="alert alert-danger">
+                                {{ error }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </div>
+                        {% if error %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ error }}
+                            </div>
+                        {% endif %}
+                    </form>
+                    <div class="text-center mt-3">
+                        <a href="{% url 'user_management:password_reset' %}" class="link-custom">Forgot Password?</a><br><br>
+                        <p>Don't have an account?</p>
+                        <a href="{% url 'user_management:register_school_admin' %}" class="link-custom">Register a School</a><br>
+                        <a href="{% url 'user_management:register_independent_learner' %}" class="link-custom">Register as Independent Learner</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

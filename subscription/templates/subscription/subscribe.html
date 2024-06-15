@@ -1,0 +1,14 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<h2>Subscribe to Premium Features</h2>
+<p>You are about to subscribe to: <strong>{{ subscription.name }}</strong>.</p>
+<p>Cost: {{ subscription.cost }} for {{ subscription.duration }} days.</p>
+
+<form method="post" action="{% url 'payments:initialize_transaction' %}">
+    {% csrf_token %}
+    <!-- Hidden field to pass subscription ID if needed -->
+    <input type="hidden" name="subscription_id" value="{{ subscription.id }}">
+    <button type="submit" class="btn btn-primary">Confirm and Pay</button>
+</form>
+{% endblock %}

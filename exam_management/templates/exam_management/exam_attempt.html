@@ -1,0 +1,170 @@
+{% extends 'base_generic.html' %}
+{% load my_filters %}
+
+{% block content %}
+<div class="container exam-container">
+    <div id="timer-container">
+        <div id="timer">Time Remaining: <span id="time"></span> minutes</div>
+        <progress id="progress" value="{{ time_remaining }}" max="{{ exam_duration_in_seconds }}"></progress>
+    </div>
+    <div id="candidate">Candidate: {{ request.user.username }}</div>
+
+    {% if current_question.instructions %}
+        <div class="instructions-container">
+            <strong>Instructions:</strong>
+            <p>{{ current_question.instructions|safe }}</p>
+        </div>
+    {% endif %}
+    
+    <div class="question-container">
+        <h6 class="highlight-custom">{{ current_question.question_text|safe }}</h6>
+        {% if current_question.media %}
+            {% for media_item in current_question.media %}
+                {% if media_item.type == 'image' %}
+                    <img src="{{ media_item.src }}" alt="Question Image">
+                {% elif media_item.type == 'latex' %}
+                    <span>\({{ media_item.data }}\)</span>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        {% if current_question.question_image %}
+            <img src="{{ current_question.question_image.url }}" alt="Question Image">
+        {% endif %}
+        {% if current_question.question_pdf %}
+            <iframe src="{{ current_question.question_pdf.url }}" width="100%" height="600px">
+                <p>Your browser doesn't support iframes.</p>
+            </iframe>
+        {% endif %}
+    </div>
+    
+    <form id="exam-form" method="post" enctype="multipart/form-data" 
+          action="{% url 'exam_management:attempt_exam' exam_id=exam_id attempt_id=attempt_id question_index=question_index %}" class="mt-4">
+        {% csrf_token %}
+        {% for option in form.selected_option.field.queryset %}
+            <div class="form-check mb-2">
+                <input type="radio" name="{{ form.selected_option.name }}" value="{{ option.id }}" 
+                       id="option{{ option.id }}" class="form-check-input" 
+                       {% if form.selected_option.value == option.id %}checked{% endif %}>
+                <label for="option{{ option.id }}" class="form-check-label">
+                    {{ forloop.counter|alpha_filter }}. {{ option.option_text|safe }}
+                    {% if option.media %}
+                        {% for media_item in option.media %}
+                            {% if media_item.type == 'image' %}
+                                <img src="{{ media_item.src }}" alt="Option Image">
+                            {% elif media_item.type == 'latex' %}
+                                <span>\({{ media_item.data }}\)</span>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </label>
+            </div>
+        {% endfor %}
+    
+        <div class="navigation-buttons">
+            {% if not is_first_question %}
+            <a href="{% url 'exam_management:attempt_exam' exam_id=exam_id attempt_id=attempt_id question_index=question_index|add:"-1" %}" class="btn btn-primary">
+                Previous
+            </a>
+            {% endif %}
+            {% if not is_last_question %}
+            <button type="submit" class="btn btn-primary">Next</button>
+            {% else %}
+            <button type="submit" class="btn btn-success">Submit</button>
+            {% endif %}
+        </div>
+    </form>
+</div>
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_HTML">
+</script>
+<script>
+    // Function to start the timer
+    function startTimer(duration, display) {
+        var timer = duration;
+        var countdown = setInterval(function() {
+            var minutes = parseInt(timer / 60, 10);
+            var seconds = parseInt(timer % 60, 10);
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(countdown);
+                handleTimerExpiry(); // Handle the timer expiry
+            } else {
+                sessionStorage.setItem('timeRemaining', timer);
+            }
+        }, 1000);
+    }
+
+    // Function to handle timer expiry
+function handleTimerExpiry() {
+    // Make an AJAX call to auto-submit the exam
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '/exam_management/attempt_exam/' + {{ exam_id }} + '/' + {{ attempt_id }} + '/0/', true); // Corrected URL
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken')); // CSRF token handling
+
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            // Redirect to the score view
+            window.location.href = '/exam_management/view_score/' + {{ exam_id }} + '/' + {{ attempt_id }} + '/';
+        } else {
+            // Handle error
+            console.error('Error in auto-submit:', xhr.responseText);
+        }
+    };
+
+    xhr.send('auto_submit=true&exam_id=' + {{ exam_id }} + '&attempt_id=' + {{ attempt_id }});
+}
+
+    // Function to get CSRF token
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Add a function to re-typeset MathJax content when new question is loaded
+    function typesetMathJax() {
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
+
+    // Call the typeset function after the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        typesetMathJax();
+    });
+    
+    // Initialization on window load
+    window.onload = function() {
+        var initialTimeRemaining = {{ time_remaining }};
+        var isNewAttempt = {{ is_new_attempt|lower }}; // Converts True/False to true/false
+
+        if (isNewAttempt) {
+            sessionStorage.removeItem('timeRemaining');
+        }
+
+        var storedTimeRemaining = sessionStorage.getItem('timeRemaining');
+
+        if (!storedTimeRemaining) {
+            sessionStorage.setItem('timeRemaining', initialTimeRemaining);
+        }
+
+        var timeRemaining = sessionStorage.getItem('timeRemaining');
+        var display = document.querySelector('#time');
+        startTimer(parseInt(timeRemaining, 10), display);
+        // Call MathJax to typeset the page
+        typesetMathJax();
+    };
+</script>
+{% endblock %}

@@ -1,0 +1,24 @@
+<!-- iexam/templates/base.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}iExam{% endblock title %}</title>
+    <!-- Add your CSS files here -->
+</head>
+<body>
+    <header>
+        <!-- Your header goes here -->
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- Content for individual pages will go here -->
+        {% endblock content %}
+    </main>
+
+    <footer>
+        <!-- Your footer goes here -->
+    </footer>
+</body>
+</html>

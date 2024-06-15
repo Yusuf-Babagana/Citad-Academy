@@ -1,0 +1,15 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+    Subject Selection - iExam
+{% endblock title %}
+
+{% block content %}
+    <h1>Select Subjects</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ subject_selection_form.as_p }}
+        <button type="submit">Update Subjects</button>
+    </form>
+{% endblock content %}

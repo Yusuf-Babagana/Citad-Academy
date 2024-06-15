@@ -1,0 +1,8 @@
+<!-- exam_management/templates/exam_management/manual_score_success.html -->
+
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <p>Manual score entry was successful!</p>
+  <a href="{% url 'exam_management:enter_manual_score' %}">Enter another score</a>
+{% endblock %}

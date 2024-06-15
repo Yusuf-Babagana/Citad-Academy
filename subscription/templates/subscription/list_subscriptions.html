@@ -1,0 +1,23 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<h2>My Subscriptions</h2>
+<ul>
+    {% for subscription in subscriptions %}
+    <li>
+        {{ subscription.name }} - {{ subscription.status | title }} until {{ subscription.end_date }}
+        <!-- Optionally, provide a link to renew or change the subscription if it's nearing expiry -->
+        {% if subscription.is_near_expiry %}
+        <a href="{% url 'subscription:renew' subscription.id %}">Renew</a>
+        {% endif %}
+    </li>
+    {% empty %}
+    <li>No active subscriptions found.</li>
+    {% endfor %}
+</ul>
+
+<!-- Link to subscribe if the user has no active subscriptions -->
+{% if subscriptions|length == 0 %}
+<p><a href="{% url 'subscription:select_subscription' %}">Subscribe now</a> to access premium features.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,141 @@
+
+{% extends "base_generic.html" %}
+{% load performance_filters %}
+{% load static %}
+
+{% block content %}
+
+<h1>Report Card</h1>
+
+<!-- Student Information -->
+<div class="student-info">
+    <h2>Student Information</h2>
+    <p><strong>Name:</strong> {{ student.user.get_full_name }}</p>
+    <p><strong>ID:</strong> {{ student.student_id }}</p>
+    <p><strong>Grade:</strong> {{ student.grade }}</p>
+    <p><strong>Class:</strong> {{ student.enrolled_class.name }}</p>
+</div>
+
+<div class="report-card-header">
+    <!-- Student Profile Picture -->
+    {% if student.user.profile_image %}
+        <img src="{{ student.user.profile_image.url }}" alt="Profile Picture" class="student-profile-picture">
+    {% endif %}
+
+    <!-- School Logo -->
+    {% if student.enrolled_class.school.logo %}
+        <img src="{{ student.enrolled_class.school.logo.url }}" alt="School Logo" class="school-logo">
+    {% endif %}
+</div>
+
+<!-- Academic Performance -->
+<div class="academic-performance">
+    <h2>Academic Performance</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Term</th>
+                <th>Year</th>
+                <th>Score</th>
+                <th>Teacher Comments</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for performance in performances %}
+                <tr>
+                    <td>{{ performance.subject.name }}</td>
+                    <td>{{ performance.term }}</td>
+                    <td>{{ performance.year }}</td>
+                    <td>{{ performance.calculate_overall_performance }}</td>
+                    <td>{{ performance.teacher_comments }}</td>
+                </tr>
+                <!-- Detailed Exam Attempts -->
+                {% with detailed_exam_attempts|get_item:performance.subject.name as attempts %}
+                    {% for attempt in attempts %}
+                        <tr>
+                            <td colspan="5">
+                                <strong>Exam:</strong> {{ attempt.exam_name }}<br>
+                                <strong>Score:</strong> {{ attempt.score }}<br>
+                                <strong>Completed:</strong> {{ attempt.completed|yesno:"Yes,No" }}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5">No exam attempts available.</td>
+                        </tr>
+                    {% endfor %}
+                {% endwith %}
+                <!-- Detailed Manual Scores -->
+                {% with detailed_manual_scores|get_item:performance.subject.name as scores %}
+                    {% for score in scores %}
+                        <tr>
+                            <td colspan="5">
+                                <strong>CA1 Score:</strong> {{ score.ca1_score }}<br>
+                                <strong>CA2 Score:</strong> {{ score.ca2_score }}<br>
+                                <strong>Exam Score:</strong> {{ score.exam_score }}<br>
+                                <strong>Total Score:</strong> {{ score.total_score }}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5">No manual scores available.</td>
+                        </tr>
+                    {% endfor %}
+                {% endwith %}
+            {% empty %}
+                <tr>
+                    <td colspan="5">No academic performance data available.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<!-- Attendance Records -->
+<div class="attendance-records">
+    <h2>Attendance Record</h2>
+    {% for record in attendance_records %}
+    <p>{{ record.date }}: {{ record.status }}</p>
+    {% empty %}
+    <p>No attendance records available.</p>
+    {% endfor %}
+</div>
+
+<!-- Extra-Curricular Activities -->
+<div class="extra-curricular-activities">
+    <h2>Extra-Curricular Activities</h2>
+    {% for activity in activities %}
+    <div>
+        <p>Activity: {{ activity.activity_name }}</p>
+        <p>Achievements: {{ activity.achievements }}</p>
+    </div>
+    {% empty %}
+    <p>No extra-curricular activities.</p>
+    {% endfor %}
+</div>
+
+<!-- Behavioral Scores -->
+<div class="behavioral-scores">
+    <h2>Behavioral Assessment</h2>
+    {% for score in behavioral_scores %}
+    <div>
+        <p>Aspect: {{ score.aspect }}</p>
+        <p>Score: {{ score.score }}</p>
+        <p>Comments: {{ score.comments }}</p>
+    </div>
+    {% empty %}
+    <p>No behavioral assessment data.</p>
+    {% endfor %}
+</div>
+
+<!-- Overall Report Card Summary -->
+{% if report_card %}
+<div class="report-card-summary">
+    <h2>Overall Summary</h2>
+    <p>{{ report_card.overall_summary }}</p>
+</div>
+{% endif %}
+
+{% endblock %}

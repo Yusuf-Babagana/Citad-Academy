@@ -1,0 +1,12 @@
+<!-- subscription/templates/subscription/select_subscription.html -->
+
+{% extends 'base_generic.html' %}  <!-- Your base template -->
+{% load static %}
+{% block content %}
+  <h1>Select Subscription Plan</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Proceed to Payment</button>
+  </form>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="highlight-custom">Questions for Exam: {{ exam.name }}</h1>
+
+    <div class="list-group">
+        {% for question in object_list %}
+        <div class="list-group-item">
+            <h5>Question: {{ question.question_text }}</h5>
+            <p><strong>Topic:</strong> {{ question.topic.name }}</p>
+            <p><strong>Subtopic:</strong> {{ question.subtopic.name }}</p>
+            <!-- You can add more details here -->
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h2>Performance Report for {{ student.user.get_full_name }}</h2>
+
+<!-- Profile Image and School Logo -->
+<div>
+    {% if profile_image %}
+        <img src="{{ profile_image }}" alt="Profile image of {{ student.user.get_full_name }}">
+    {% endif %}
+    {% if school_logo %}
+        <img src="{{ school_logo }}" alt="Logo of {{ student.school.name }}">
+    {% endif %}
+</div>
+
+<!-- Academic Performance -->
+{% for performance in performances %}
+    <div>
+        <h3>{{ performance.subject.name }}</h3>
+        <p>Term: {{ performance.term }}</p>
+        <p>Year: {{ performance.year }}</p>
+        <p>Score: {{ performance.calculate_overall_performance }}</p>
+        <!-- Teacher comments -->
+        <p>Teacher Comments: {{ performance.teacher_comments }}</p>
+    </div>
+{% empty %}
+    <p>No academic performance data available.</p>
+{% endfor %}
+
+<!-- Attendance Records -->
+<h3>Attendance Record</h3>
+{% for record in attendance_records %}
+    <p>{{ record.date }}: {{ record.status }}</p>
+{% empty %}
+    <p>No attendance records available.</p>
+{% endfor %}
+
+<!-- Extra-Curricular Activities -->
+<h3>Extra-Curricular Activities</h3>
+{% for activity in activities %}
+    <div>
+        <p>Activity: {{ activity.activity_name }}</p>
+        <p>Achievements: {{ activity.achievements }}</p>
+    </div>
+{% empty %}
+    <p>No extra-curricular activities.</p>
+{% endfor %}
+
+<!-- Behavioral Scores -->
+<h3>Behavioral Assessment</h3>
+{% for score in behavioral_scores %}
+    <div>
+        <p>Behavioral Aspect: {{ score.aspect }}</p>
+        <p>Score: {{ score.score }}</p>
+        <p>Comments: {{ score.comments }}</p>
+    </div>
+{% empty %}
+    <p>No behavioral assessment data.</p>
+{% endfor %}
+
+<!-- Overall Report Card Summary -->
+{% if report_card %}
+    <h3>Overall Summary</h3>
+    <p>{{ report_card.overall_summary }}</p>
+{% endif %}
+
+<!-- Average Score and Position -->
+<div>
+    <h3>Summary</h3>
+    <p>Average Score: {{ average_score }}</p>
+    <p>Position in Class: {{ position }}</p>
+</div>
+
+{% endblock %}

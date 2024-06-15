@@ -1,0 +1,14 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+    Create SubTopic - iExam
+{% endblock title %}
+
+{% block content %}
+    <h1>Create SubTopic</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ subtopic_form.as_p }}
+        <button type="submit" name="subtopic_submit">Create SubTopic</button>
+    </form>
+{% endblock content %}

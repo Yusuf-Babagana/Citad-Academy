@@ -1,0 +1,10 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+
+{% block content %}
+<h2>Overall Performance for {{ student.user.get_full_name }}</h2>
+<p>Subject: {{ performance.subject.name }}</p>
+<p>Term: {{ term }}</p>
+<p>Year: {{ year }}</p>
+<p>Overall Performance Score: {{ performance.score }}</p>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Button to go back to the Dashboard -->
+<div class="mb-3">
+    <a href="{% url 'user_management:teacher-dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+</div>
+    <div class="container py-5">
+        <h1 class="highlight-custom">Manage Exam: {{ exam.name }}</h1>
+        
+        <div class="actions mb-4">
+          <a href="{% url 'exam_management:upload_csv_questions' exam.id %}" class="btn btn-hero">Upload Questions via CSV, PDF, DOC</a>
+          <a href="{% url 'exam_management:edit_exam' exam.id %}" class="btn btn-hero">Edit Exam Details</a>
+          <a href="{% url 'exam_management:publish_exam' exam.id %}" class="btn {% if exam.is_published %}btn-danger{% else %}btn-primary{% endif %}">{% if exam.is_published %}Unpublish{% else %}Publish{% endif %} Exam</a>
+        </div>
+
+        <h3 class="highlight-custom">Questions</h3>
+        {% for question in exam.questions.all %}
+            <div class="question-card card mb-3">
+                <div class="card-body">
+                    <a href="{% url 'exam_management:edit_question' question.id %}" class="link-custom">Edit: {{ question.question_text }}</a>
+                    <a href="{% url 'exam_management:question-delete' question.id %}" class="link-custom float-right">Delete</a>
+                </div>
+            </div>
+        {% empty %}
+            <p>No questions added yet.</p>
+        {% endfor %}
+
+        <h3 class="highlight-custom">Add New Question</h3>
+    <form method="post" class="form-field" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ questions_form.as_p }}
+        {{ options_formset.management_form }}
+        {% for form in options_formset %}
+            {{ form.as_p }}
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Save Question</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.tiny.cloud/1/y9vthsyw4rabtel3758t376lb4tsiwp5xfwssqqssu47ita4/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: 'textarea',
+        height: 480,
+        plugins: 'print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons tiny_mce_wiris', // Added 'tiny_mce_wiris' here
+        toolbar: 'fullscreen preview bold italic underline | fontselect, fontsizeselect | forecolor backcolor | alignleft alignright | aligncenter alignjustify | numlist bullist outdent indent | table | link image media | codesample | tiny_mce_wiris_formulaEditor tiny_mce_wiris_formulaEditorChemistry', // Replaced 'mathjax' with 'tiny_mce_wiris_formulaEditor' and 'tiny_mce_wiris_formulaEditorChemistry'
+        external_plugins: {
+            'tiny_mce_wiris': 'https://www.wiris.net/demo/plugins/tiny_mce/plugin.js'
+        },
+        toolbar_sticky: true,
+        autosave_ask_before_unload: true,
+        autosave_interval: '30s',
+        autosave_prefix: '{path}{query}-{id}-',
+        autosave_restore_when_empty: false,
+        autosave_retention: '2m',
+        image_advtab: true,
+        link_list: [
+            { title: 'My page 1', value: 'https://www.tiny.cloud' },
+            { title: 'My page 2', value: 'http://www.moxiecode.com' }
+        ],
+        image_list: [
+            { title: 'My page 1', value: 'https://www.tiny.cloud' },
+            { title: 'My page 2', value: 'http://www.moxiecode.com' }
+        ],
+        image_class_list: [
+            { title: 'None', value: '' },
+            { title: 'Some class', value: 'class-name' }
+        ],
+        importcss_append: true,
+        file_picker_callback: function (callback, value, meta) {
+            /* Provide file and image upload logic here */
+        },
+        templates: [
+            { title: 'New Table', description: 'creates a new table', content: '<div class="mceTmpl"><table width="98%"  border="0" cellspacing="0" cellpadding="0"><tr><th>Column 1</th><th>Column 2</th> </tr><tr><td></td><td></td></tr></table></div>' },
+            { title: 'Starting my document', description: 'A cure for writer\'s block', content: 'Once upon a time...' },
+            { title: 'New Template', description: 'Template without table', content: 'Something goes here...' }
+        ],
+        template_cdate_format: '[Date Created (CDATE): %m/%d/%Y : %H:%M:%S]',
+        template_mdate_format: '[Date Modified (MDATE): %m/%d/%Y : %H:%M:%S]',
+        height: 600,
+        image_caption: true,
+        quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
+        noneditable_noneditable_class: 'mceNonEditable',
+        toolbar_drawer: 'sliding',
+        contextmenu: 'link image imagetools table',
+        skin: 'oxide',
+        content_css: 'default',
+        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+    });
+</script>
+{% endblock %}

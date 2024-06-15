@@ -1,0 +1,106 @@
+{% extends 'base_generic.html' %}
+
+{% load static %} <!-- If you're using Bootstrap from a static file -->
+
+{% block content %}
+  <div class="container mt-4">
+    <h1 class="mb-4">Exam Analysis</h1>
+
+    {% if errors %}
+      <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Errors Detected</h4>
+        <ul>
+          {% for error in errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <div class="card mb-4">
+      <div class="card-header">
+        Overall Scores
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">Raw Score: {{ raw_score }}</h5>
+        <h5 class="card-title">Percentage Score: {{ percentage_score }}%</h5>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header">
+        Topic-wise Performance
+      </div>
+      <div class="card-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Topic</th>
+              <th scope="col">Score</th>
+              <th scope="col">Percentage</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for topic, score in topic_scores.items %}
+              <tr>
+                <td>{{ topic }}</td>
+                <td>{{ score }}</td>
+                <td>{{ topic_percentage_scores.topic }}%</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header">
+        Areas of Weakness
+      </div>
+      <div class="card-body">
+        <ul class="list-group">
+          {% for topic, count in topic_weaknesses.items %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              {{ topic }}
+              <span class="badge bg-primary rounded-pill">{{ count }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        Corrections and Explanations
+      </div>
+      <div class="card-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Question</th>
+              <th scope="col">Your Answer</th>
+              <th scope="col">Correct Answer</th>
+              <th scope="col">Explanation</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for detailed in detailed_answers %}
+              <tr>
+                <td>{{ detailed.question.question_text|safe }}</td>
+                <td>{{ detailed.student_answer|safe }}</td>
+                <td>{{ detailed.correct_answer|safe }}</td>
+                <td>
+                  {% if detailed.explanation %}
+                    {{ detailed.explanation|safe }}
+                  {% else %}
+                    No explanation available.
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

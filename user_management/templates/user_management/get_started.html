@@ -1,0 +1,174 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+
+{% block content %}
+<main class="container">
+    <h1 class="text-center">Get Started with iExam</h1>
+    <p class="lead text-center">iExam offers a comprehensive platform for online examination management, tailored for students, teachers, school administrators, and independent learners.</p>
+
+    <!-- Overview -->
+<div class="row overview-section text-center">
+    <h2 class="col-12">What We Offer</h2>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <i class="fas fa-clipboard-list fa-3x mb-3"></i>
+                <h5 class="card-title">Online Examinations</h5>
+                <p class="card-text">Take exams online with ease and convenience.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <i class="fas fa-chalkboard-teacher fa-3x mb-3"></i>
+                <h5 class="card-title">Interactive Lessons</h5>
+                <p class="card-text">Engage in interactive lessons for effective learning.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <i class="fas fa-chart-line fa-3x mb-3"></i>
+                <h5 class="card-title">Performance Tracking</h5>
+                <p class="card-text">Track your performance and progress over time.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <i class="fas fa-cogs fa-3x mb-3"></i>
+                <h5 class="card-title">And Much More...</h5>
+                <p class="card-text">Explore additional features tailored for your educational needs.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    
+
+    <!-- Registration Links -->
+<div class="row registration-links-section text-center">
+    <h2 class="col-12">Register Now</h2>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <i class="fas fa-school fa-3x mb-3"></i>
+                <h5 class="card-title">Register a School</h5>
+                <p class="card-text">Join our platform as a school administrator.</p>
+                <a href="{% url 'user_management:register_school_admin' %}" class="btn btn-primary btn-lg">Register</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <i class="fas fa-user-graduate fa-3x mb-3"></i>
+                <h5 class="card-title">Register as Independent Learner</h5>
+                <p class="card-text">Create an account as an independent learner.</p>
+                <a href="{% url 'user_management:register_independent_learner' %}" class="btn btn-secondary btn-lg">Register</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <!-- FAQ -->
+<div class="row faq-section">
+    <h2 class="col-12">Frequently Asked Questions</h2>
+    <div class="col-12">
+        <!-- Existing FAQs -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <i class="fas fa-user-plus fa-3x mb-3"></i>
+                <h5 class="card-title">How do I sign up?</h5>
+                <p class="card-text">Choose your role and follow the registration links above.</p>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-body">
+                <i class="fas fa-dollar-sign fa-3x mb-3"></i>
+                <h5 class="card-title">Is there a fee?</h5>
+                <p class="card-text">Free for now.</p>
+            </div>
+        </div>
+
+        <!-- New FAQs -->
+        <!-- School Admin-related FAQs -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <i class="fas fa-school fa-3x mb-3"></i>
+                <h5 class="card-title">How can a school admin register their school?</h5>
+                <p class="card-text">To register your school, log in as a school admin, and go to the "Registration" section. Follow the prompts to provide necessary details about your school.</p>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-body">
+                <i class="fas fa-users fa-3x mb-3"></i>
+                <h5 class="card-title">What steps does a school admin take after logging in?</h5>
+                <p class="card-text">After logging in, a school admin can create classes, subjects/courses, register students, register staff (teachers), and manage various aspects of school administration.</p>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-body">
+                <i class="fas fa-tasks fa-3x mb-3"></i>
+                <h5 class="card-title">How does a school admin assign classes, subjects, and students to teachers?</h5>
+                <p class="card-text">After creating classes and subjects, a school admin can assign classes to teachers and students. This is done through the "Assignments" section in the admin dashboard.</p>
+            </div>
+        </div>
+
+        <!-- Student and Teacher Registration FAQs -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <i class="fas fa-clipboard-list fa-3x mb-3"></i>
+                <h5 class="card-title">How can schools register their students and staff?</h5>
+                <p class="card-text">Schools can register students and staff (teachers) through the "Registration" section in the admin dashboard. Provide the required information for each student or staff member.</p>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-body">
+                <i class="fas fa-exclamation-circle fa-3x mb-3"></i>
+                <h5 class="card-title">What if there's an enrollment mistake? How can schools correct it?</h5>
+                <p class="card-text">If there's an enrollment mistake, school admins can review and approve enrollment requests in the "Enrollment Approval" section to correct any errors.</p>
+            </div>
+        </div>
+
+        <!-- Independent Learner-related FAQ -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <i class="fas fa-user-graduate fa-3x mb-3"></i>
+                <h5 class="card-title">How do independent learners create their accounts?</h5>
+                <p class="card-text">Independent learners can create their accounts by clicking on the "Register as Independent Learner" button on the homepage. Follow the registration process and provide the necessary information.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Information -->
+<div class="row contact-section">
+    <h2 class="col-12">Contact Us</h2>
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <i class="fas fa-envelope fa-3x mb-3"></i>
+                <h5 class="card-title">Email</h5>
+                <p class="card-text">support@iexam.com</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <i class="fas fa-phone fa-3x mb-3"></i>
+                <h5 class="card-title">Phone</h5>
+                <p class="card-text">+2348134925177</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</main>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+
+{% block content %}
+<h2>Academic Performance for {{ student.user.get_full_name }}</h2>
+
+{% if performance %}
+    <h3>{{ performance.subject.name }}</h3>
+    <p>Term: {{ performance.term }}</p>
+    <p>Year: {{ performance.year }}</p>
+
+    <h4>Manual Scores:</h4>
+    {% if detailed_scores %}
+        <table>
+            <tr>
+                <th>CA1 Score</th>
+                <th>CA2 Score</th>
+                <th>Exam Score</th>
+                <th>Total Score</th>
+                <th>Date Assigned</th>
+            </tr>
+            {% for score in detailed_scores %}
+                <tr>
+                    <td>{{ score.ca1_score }}</td>
+                    <td>{{ score.ca2_score }}</td>
+                    <td>{{ score.exam_score }}</td>
+                    <td>{{ score.total_score }}</td>
+                    <td>{{ score.date_assigned }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No manual scores available.</p>
+    {% endif %}
+
+    <h4>Exam Attempts:</h4>
+    {% if detailed_exam_attempts %}
+        <table>
+            <tr>
+                <th>Exam Name</th>
+                <th>Score</th>
+                <th>Completed</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+            </tr>
+            {% for attempt in detailed_exam_attempts %}
+                <tr>
+                    <td>{{ attempt.exam_name }}</td>
+                    <td>{{ attempt.score }}</td>
+                    <td>{{ attempt.completed }}</td>
+                    <td>{{ attempt.start_time }}</td>
+                    <td>{{ attempt.end_time }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No exam attempts available.</p>
+    {% endif %}
+
+{% else %}
+    <p>No academic performance records found.</p>
+{% endif %}
+{% endblock %}

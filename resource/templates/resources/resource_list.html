@@ -1,0 +1,28 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Resources</h1>
+    <div class="row">
+        {% for resource in resources %}
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                {% if resource.image %}
+                <img src="{{ resource.image.url }}" class="card-img-top" alt="{{ resource.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ resource.title }}</h5>
+                    <p class="card-text">{{ resource.description|truncatewords:20 }}</p>
+                    <a href="{% url 'resource:resource_detail' resource.slug %}" class="btn btn-primary">Learn More</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p>No resources found.</p>
+        </div>
+        {% endfor %}
+    </div>
+    <!-- Pagination links could go here -->
+</div>
+{% endblock %}
