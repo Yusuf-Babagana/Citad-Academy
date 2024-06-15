@@ -1,0 +1,55 @@
+{% extends 'base_generic.html' %}
+{% load static %} <!-- If you're using static files like CSS or JS -->
+
+{% block content %}
+
+<button onclick="window.print()">Print this Report</button>
+<h1>Class Scores</h1>
+
+<!-- Display Class Topper Information -->
+<div>
+    <h2>Class Topper: {{ class_topper }}</h2>
+    <p>Topper Score: {{ topper_score }}</p>
+</div>
+
+<!-- Iterate Through Each Student's Detailed Reports -->
+{% for report in detailed_reports %}
+    <div>
+        <h2>Student: {{ report.student_info.name }}</h2>
+        {% if report.student_info.profile_image %}
+            <img src="{{ report.student_info.profile_image }}" alt="Student Profile Image">
+        {% endif %}
+        
+        <!-- Academic Performance Section -->
+        <h3>Academic Performance:</h3>
+        <div class="performance-section">
+            {% for performance in report.student_info.academic_performance %}
+                <div class="performance-item">
+                    <span class="subject">{{ performance.subject.name }}</span>
+                    <span class="grade">Grade: {{ performance.grade }}</span>
+                </div>
+            {% empty %}
+                <p>No academic performance records available.</p>
+            {% endfor %}
+        </div>
+
+        <!-- Display Activities -->
+        <h3>Activities:</h3>
+        {% for activity in report.student_info.activities %}
+            <p>{{ activity.activity_name }}: {{ activity.participation_level }}</p>
+        {% endfor %}
+
+        <!-- Display Behavioral Assessments -->
+        <h3>Behavioral Assessments:</h3>
+        {% for behavior in report.student_info.behavioral_assessment %}
+            <p>{{ behavior.behavior }}: Score - {{ behavior.score }}</p>
+        {% endfor %}
+
+        <!-- Display Manual Scores if available -->
+        <h3>Manual Scores:</h3>
+        {% for manual_score in report.student_info.manual_scores %}
+            <p>{{ manual_score.subject.name }}: {{ manual_score.total_score }}</p>
+        {% endfor %}
+    </div>
+{% endfor %}
+{% endblock %}

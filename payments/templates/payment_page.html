@@ -1,0 +1,68 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+{% if messages %}
+    <div class="container mt-4">
+        {% for message in messages %}
+            {% if message.level_tag == 'success' %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-5">
+            <div class="card border-light shadow-lg p-3 mb-5 bg-white rounded">
+                <div class="card-body">
+                    <h1 class="text-center">Make Payment</h1>
+                    <!-- Display the selected subscription name and cost -->
+                    <p class="text-center">Plan: <strong>{{ selected_subscription.name }}</strong></p>
+                    <p class="text-center">Cost: <strong>{{ selected_subscription.cost }} Naira</strong></p>
+                    <div class="d-grid gap-2">
+                        <button type="button" onclick="payWithPaystack()" class="btn btn-primary">Pay Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+
+<script type="text/javascript">
+    function payWithPaystack() {
+        // Convert the subscription cost from Naira to Kobo for Paystack
+        var amountInKobo = {{ selected_subscription.cost|floatformat:"-2"|cut:"."|add:"00" }};
+        
+        var handler = PaystackPop.setup({
+            key: 'pk_live_50365ec3412a3f0b6c469489f41c90db39bbaac5',
+            email: '{{ user.email }}',
+            amount: amountInKobo,
+            currency: "NGN",
+            ref: '' + Math.floor((Math.random() * 1000000000) + 1), // Generate a random transaction reference
+            onClose: function() {
+                alert('Transaction was not completed, window closed.');
+            },
+            callback: function(response) {
+                fetch(`/payments/verify_transaction/?reference=${response.reference}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Payment successful!');
+                        window.location.href = dashboardUrls['{{ user.role }}']; // Redirect to the user's dashboard
+                    } else {
+                        alert('Payment verification failed. Please try again.');
+                    }
+                });
+            }
+        });
+        handler.openIframe();
+    }
+</script>
+{% endblock %}

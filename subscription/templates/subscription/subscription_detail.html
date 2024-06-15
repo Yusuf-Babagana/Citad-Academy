@@ -1,0 +1,16 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<h2>Subscription Details</h2>
+
+<div>
+    <p><strong>Name:</strong> {{ subscription.name }}</p>
+    <p><strong>Status:</strong> {{ subscription.status | title }}</p>
+    <p><strong>Start Date:</strong> {{ subscription.start_date | date:"Y-m-d" }}</p>
+    <p><strong>End Date:</strong> {{ subscription.end_date | date:"Y-m-d" }}</p>
+    <p><strong>Cost:</strong> {{ subscription.cost }}</p>
+</div>
+
+<a href="{% url 'subscription:renew_subscription' subscription.pk %}" class="btn btn-primary">Renew</a>
+
+{% endblock %}

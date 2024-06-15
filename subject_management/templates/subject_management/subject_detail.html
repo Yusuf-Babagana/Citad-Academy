@@ -1,0 +1,16 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+    {{ subject.name }} - iExam
+{% endblock title %}
+
+{% block content %}
+    <h1>{{ subject.name }}</h1>
+    
+    <h2>Topics</h2>
+    <ul>
+    {% for topic in subject.topics.all %}
+        <li>{{ topic.name }}</li>
+    {% endfor %}
+    </ul>
+{% endblock content %}

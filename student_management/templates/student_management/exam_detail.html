@@ -1,0 +1,20 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<h1>{{ object.name }}</h1>
+<p>Subject: {{ object.subject.name }}</p>
+<p>Number of Questions: {{ object.number_of_questions }}</p>
+<p>Duration: {{ object.duration }}</p>
+<p>Published: {{ object.is_published }}</p>
+
+<h2>Questions:</h2>
+{% for qwo in questions_with_options %}
+  <p>Question: {{ qwo.question.question_text }}</p>
+  <p>Instructions: {{ qwo.question.instructions }}</p>
+  <ul>
+  {% for option in qwo.options %}
+    <li>{{ option.option_text }} {% if option.is_correct %}(Correct){% endif %}</li>
+  {% endfor %}
+  </ul>
+{% endfor %}
+{% endblock %}

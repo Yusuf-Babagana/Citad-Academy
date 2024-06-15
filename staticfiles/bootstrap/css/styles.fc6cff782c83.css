@@ -1,0 +1,346 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .content {
+    flex: 1;
+  }
+
+/* Header Styles */
+/* Existing classes */
+.navbar-custom {
+    background-color: #51D6A7; 
+    line-height: 60px; 
+    z-index: 1000; /* Ensure this is higher than the z-index of other elements it should overlap */
+    position: relative; /* This is necessary for z-index to work */
+}
+
+/* New class for the dropdown */
+.nav-item.dropdown {
+    z-index: 2000;  /* Make it higher than the navbar */
+    position: relative;  /* Required for z-index to work */
+}
+
+/* Styling the dropdown menu */
+.dropdown-menu {
+    z-index: 2001;  /* Even higher, if needed */
+    position: absolute;  /* Required for z-index to work */
+    background-color: #ffffff; /* Light background for the dropdown */
+    border: 1px solid #ddd; /* Light border for the dropdown */
+    border-radius: .25rem; /* Slightly rounded corners for the dropdown */
+    box-shadow: 0 2px 5px rgba(0,0,0,.15); /* Subtle shadow for depth */
+    margin-top: .5rem; /* Add a bit of space between the dropdown and the navbar */
+}
+
+/* Styling for custom navbar links */
+.navbar-custom .navbar-brand,
+.navbar-custom .nav-link {
+    color: white;
+}
+
+.navbar-custom .nav-link:hover,
+.navbar-custom .nav-link:focus {
+    color: #fff;
+    opacity: 0.8;
+    background-color: transparent; /* Avoid background color on hover/focus */
+}
+
+/* Styling the navbar-toggler-icon (hamburger icon) */
+.navbar-toggler-icon {
+    /* Create a three-line hamburger icon */
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+    /* Remove any background color that might be filling the entire element */
+    background-color: transparent !important;
+    /* Other styles to ensure visibility/alignment might be needed */
+}
+
+/* Footer Styles */
+.footer-custom {
+    background-color: #3A81D1; /* Blue */
+    color: white;
+}
+
+button.btn-primary {
+    background-color: #E6C664; /* Gold */
+    color: white;
+}
+
+button.btn-primary:hover {
+    background-color: #d4b354; /* Slightly darker gold */
+}
+
+/* Link Styles */
+.link-custom {
+    color: #7B61A9; /* Purple */
+}
+
+.link-custom:hover {
+    color: #604b8b; /* Slightly darker purple */
+}
+
+/* Highlighted Text Styles */
+.highlight-custom {
+    color: #F79D4C; /* Orange */
+}
+
+/* Hero Section Styles */
+.hero {
+    height: 100vh; /* Make it full viewport height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.4); /* For better text visibility */
+    background-color: #51D6A7; /* Using the Primary color - Green */
+    color: #4A90E2; /* Using the Secondary color - Blue for text */
+    padding: 100px 0; /* Adjust padding as required */
+    background-image: url("/static/bootstrap/media/iExam1.56f86d5b6c31.png"); 
+    background-size: cover;  /* Cover the entire section */
+    background-position: center;  /* Center the image */
+    background-repeat: no-repeat;  /* Do not repeat the image */
+}
+  .container {
+    z-index: 1; /* To ensure text appears above the background */
+  }
+
+.hero h1 {
+    font-size: 3.5rem; /* Larger font size for the main heading */
+}
+
+.hero p.lead {
+    font-size: 1.5rem; /* Larger font size for the subtitle */
+    color: #FFC107; /* Using the Tertiary color - Gold for emphasis */
+}
+
+.btn-hero {
+    background-color: #FF9800; /* Using the Accent color 2 - Orange for the button */
+    color: white; /* Text color */
+    border: none;
+    padding: 15px 30px; /* Adjust button padding as required */
+    font-size: 1.2rem; /* Adjust button font size as required */
+}
+
+/* Services Section Styles */
+.services {
+    background-color: white; /* Change as required */
+    color: #4A90E2; /* Using the Secondary color - Blue for text */
+}
+
+.services h2 {
+    color: #51D6A7; /* Using the Primary color - Green for headers */
+}
+
+.services h4 {
+    color: #9C27B0; /* Using the Accent color 1 - Purple for sub-headers */
+}
+
+.services p {
+    color: #FF9800; /* Using the Accent color 2 - Orange for content */
+}
+
+.py-5 {
+    padding: 50px 0;
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    border-radius: 0;
+}
+
+.card .card-title {
+    margin-bottom: 0.5rem;
+}
+
+/* Form Styles */
+form .form-group label {
+    font-weight: 500;
+}
+
+/* Responsive Styles */
+@media (max-width: 767px) {
+    .hero {
+        padding: 50px 0;
+    }
+}
+
+.logo-image {
+    background-color: white;
+    border-radius: 50%; 
+    padding: 10px; /* Increase or adjust padding */
+    margin-right: 5px;
+    height: 120px; /* Increase height */
+    width: 120px; /* Increase width */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.logo-image img {
+    object-fit: cover; /* or object-fit: contain; depending on your requirement */
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+}
+
+.form-field {
+    background-color: #F8F9FA;
+    border-color: #51D6A7;
+    border-radius: 5px;
+}
+
+.error-message {
+    color: #DC3545; /* A strong red color for error messages */
+    font-size: 0.875em;
+}
+
+* Tab Styles */
+.nav-tabs .nav-link {
+    border-color: #51D6A7; /* Green */
+    color: #7B61A9; /* Purple */
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #51D6A7; /* Green */
+    color: white;
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    border-radius: 0;
+    margin-bottom: 20px; /* Add some space between cards */
+}
+
+.card .card-header {
+    background-color: #51D6A7; /* Green */
+    color: white;
+}
+
+.card .card-body {
+    background-color: #F8F9FA; /* Light gray background */
+}
+
+.card .btn-info {
+    background-color: #7B61A9; /* Purple */
+    color: white;
+}
+
+/* Form Styles */
+form .form-group label {
+    font-weight: 500;
+}
+
+.form-control {
+    background-color: #F8F9FA;
+    border-color: #51D6A7;
+    border-radius: 5px;
+}
+
+/* Error Message Styles */
+.alert.alert-danger {
+    color: #DC3545; /* A strong red color for error messages */
+    font-size: 0.875em;
+}
+
+#timer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#timer {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+progress {
+    width: 50%; /* adjust as needed */
+    height: 10px;
+}
+
+.footer-custom h4 {
+    margin-bottom: 0.5rem; /* Reduce space below headings */
+  }
+  
+  .footer-custom ul {
+    padding: 0; /* Remove padding from the list */
+    list-style: none; /* Remove bullet points */
+  }
+  
+  .footer-custom li {
+    line-height: 1.2; /* Adjust line height between list items */
+  }
+  
+  .footer-custom p,
+  .footer-custom address {
+    margin-bottom: 0.5rem; /* Reduce space below paragraphs and address */
+  }
+  
+  .footer-custom .row.text-center {
+    margin-top: 1rem; /* Add some space above the copyright row */
+  }
+
+  .footer {
+    flex-shrink: 0;
+  }
+  
+  .dashboard-container {
+    max-width: 800px;
+    margin: auto;
+}
+
+/* Updated CSS */
+.exam-container {
+    position: static;
+    padding-top: 60px;
+    width: 100%;
+    height: auto;  /* Changed from 100% to auto */
+    overflow-y: visible;  /* Changed from auto to visible */
+    border: 2px solid blue;
+}
+
+.current-question {
+    background-color: blue !important;
+}
+
+/* Mobile-specific */
+@media only screen and (max-width: 768px) {
+    .exam-container {
+        position: static;
+        padding-top: 10%;
+        height: auto;
+        overflow-y: auto;
+    }
+}
+
+#videoTourCarousel .carousel-item iframe {
+    width: 100%;
+    max-width: 100%;
+}
+
+.profile-image {
+    max-width: 150px; /* Adjust width as needed */
+    max-height: 150px; /* Adjust height as needed */
+    border-radius: 50%; /* Circular image */
+    border: 3px solid #ddd; /* Border around the image */
+    object-fit: cover; /* Ensures the image covers the area nicely */
+    display: block; /* Center image using margin if desired */
+    margin: 0 auto; /* Center image horizontally */
+}
+
+.performance-section {
+    margin: 10px 0;
+}
+
+.performance-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.subject {
+    font-weight: bold;
+}

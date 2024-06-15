@@ -1,0 +1,12 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<h1>Questions for Exam: {{ exam.name }}</h1>
+
+{% for question in object_list %}
+  <p>Question: {{ question.question_text }}</p>
+  <p>Topic: {{ question.topic.name }}</p>
+  <p>Subtopic: {{ question.subtopic.name }}</p>
+  <!-- You can add more details here -->
+{% endfor %}
+{% endblock %}

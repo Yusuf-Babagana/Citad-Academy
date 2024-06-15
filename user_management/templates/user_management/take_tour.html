@@ -1,0 +1,41 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+
+{% block content %}
+<main class="container">
+    <!-- Take a Tour of iExam -->
+<section class="container">
+    <h1 class="text-center">Take a Tour of iExam</h1>
+
+    <!-- Slideshow or Video Tour -->
+    <div class="tour-section">
+        <div class="card mb-4">
+            <div class="card-body">
+                <i class="fas fa-play-circle fa-3x mb-3"></i>
+                <h2 class="card-title">Platform Tour</h2>
+                <!-- You can embed a video or create a slideshow here -->
+                <iframe src="your_video_link_here" width="100%" height="315" frameborder="0" allowfullscreen></iframe>
+                <!-- OR a slideshow using a JavaScript library like Slick or Owl Carousel -->
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Explanation of Different Roles -->
+<div class="roles-section">
+    <div class="card mb-4">
+        <div class="card-body">
+            <i class="fas fa-graduation-cap fa-3x mb-3"></i>
+            <h2 class="card-title">Roles Within the System</h2>
+            <ul class="list-unstyled">
+                <li><strong>Students:</strong> Take exams, learn through lessons, and track progress.</li>
+                <li><strong>Independent Learners:</strong> Take exams, learn through lessons, and track progress.</li>
+                <li><strong>Teachers:</strong> Create and manage exams, monitor student performance.</li>
+                <li><strong>School Administrators:</strong> Manage school-wide settings and data.</li>
+                <!-- Add more roles as needed -->
+            </ul>
+        </div>
+    </div>
+</div>
+</main>
+{% endblock %}

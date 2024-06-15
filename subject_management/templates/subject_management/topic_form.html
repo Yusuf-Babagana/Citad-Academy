@@ -1,0 +1,14 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+    Create Topic - iExam
+{% endblock title %}
+
+{% block content %}
+    <h1>Create Topic</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ topic_form.as_p }}
+        <button type="submit" name="topic_submit">Create Topic</button>
+    </form>
+{% endblock content %}

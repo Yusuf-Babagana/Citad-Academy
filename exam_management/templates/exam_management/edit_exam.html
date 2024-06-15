@@ -1,0 +1,24 @@
+{% extends 'base_generic.html' %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="container">
+    <h1 class="highlight-custom">Edit Exam: {{ object.name }}</h1>
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                {{ field|add_class:"form-control" }}
+                {% for error in field.errors %}
+                    <div class="alert alert-danger mt-2">
+                        {{ error }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+    <a href="{% url 'exam_management:exam-detail' object.id %}" class="btn btn-secondary mt-3">Cancel</a>
+</div>
+{% endblock %}

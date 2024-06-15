@@ -1,0 +1,31 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}
+    Take Exam - iExam
+{% endblock title %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5">{{ exam.name }}</h1>
+
+    {% for question in questions %}
+    <form method="post" class="mb-4">
+        {% csrf_token %}
+        <div class="border p-4 mb-4">
+            <input type="hidden" name="question_id" value="{{ question.id }}">
+            <h5 class="mb-3">{{ question.question_text }}</h5>
+            <!-- your other inputs here... -->
+            <button type="submit" class="btn btn-primary">Next</button>
+        </div>
+    </form>
+    {% empty %}
+    <form method="post" action="{% url 'exam_management:submit_exam' exam.id %}">
+        {% csrf_token %}
+        <div class="text-center">
+            <p>No more questions.</p>
+            <button type="submit" class="btn btn-success">Submit Exam</button>
+        </div>
+    </form>
+    {% endfor %}
+</div>
+{% endblock content %}

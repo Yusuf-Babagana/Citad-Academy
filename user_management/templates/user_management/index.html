@@ -1,0 +1,239 @@
+{% extends "base_generic.html" %}
+{% load static %}
+
+{% block title %}Home - iExam{% endblock %}
+
+{% block content %}
+
+<!-- Hero section with inline CSS for background image -->
+<section class="hero text-center bg-light" style="background-image: url('{% static 'bootstrap/media/iExam1.png' %}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <div class="container" style="background-color: rgba(254, 254, 254, 0.8); padding: 20px; border-radius: 10px;">
+        <h1 class="lead" style="color: #030202;">Unlock Your Academic Potential Online.</h1>
+        <a href="{% url 'user_management:get_started' %}" class="btn btn-primary">Get Started</a>
+        <a href="{% url 'user_management:video_tour' %}" class="btn btn-secondary">Take a Tour</a>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5" id="features">
+    <div class="container">
+        <h2 class="text-center mb-5">Our Features</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <i class="fas fa-user-friends fa-3x"></i>
+                <h4>User-Friendly Interface</h4>
+                <p>Navigate with ease! Our platform is designed with an intuitive, user-friendly interface, making it easy for students of all ages to practice exams and monitor their progress.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-cogs fa-3x"></i>
+                <h4>Customizable Subject Combinations</h4>
+                <p>Tailor your study to your needs. iExam allows students to select customized subject combinations for practice exams, aligning with their academic goals.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-chart-line fa-3x"></i>
+                <h4>Real-Time Performance Tracking</h4>
+                <p>Stay on top of your progress! Track your performance in real-time, gain insights into your strengths and weaknesses, and benchmark your scores against a competitive leaderboard.</p>
+            </div>
+        </div>
+        <!-- Second Row of Features -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <i class="fas fa-trophy fa-3x"></i>
+                <h4>Leaderboard Competitions</h4>
+                <p>Turn your studies into an exciting challenge. Participate in leaderboard competitions, compare your performance with peers, and stay motivated on your academic journey.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-clock fa-3x"></i>
+                <h4>Immediate Exam Results</h4>
+                <p>Get your results instantly! With iExam, there's no need to wait anxiously for your results. As soon as you finish your exam, your scores are available.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-school fa-3x"></i>
+                <h4>School Registration & Management</h4>
+                <p>Empowering schools to enhance student learning. iExam provides a dedicated portal for school registration, managing student accounts, and tracking institution-wide performance.</p>
+            </div>
+        </div>
+        <!-- Third Row of Features -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <i class="fas fa-bell fa-3x"></i>
+                <h4>Push Notifications</h4>
+                <p>Stay updated with important events. From exam results to competition updates, receive real-time notifications directly on your device.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-language fa-3x"></i>
+                <h4>Multilingual Support</h4>
+                <p>Breaking language barriers in learning. iExam supports multiple languages including English, Arabic, and French, providing a personalized and inclusive learning experience.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="fas fa-lock fa-3x"></i>
+                <h4>Robust Security</h4>
+                <p>Your data is safe with us. With secure user authentication and encryption of sensitive data, iExam provides a secure environment for students and schools.</p>
+            </div>
+        </div>
+        <!-- Fourth Row of Features (if needed) -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <i class="fas fa-laptop fa-3x"></i>
+                <h4>Wide Compatibility</h4>
+                <p>Learn on your terms. Whether you're using a Windows PC, a Mac, or an Android device, iExam's platform is compatible with your preferred technology.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- About Us Section -->
+<section class="py-5 bg-light" id="about">
+    <div class="container">
+        <h2 class="text-center mb-3">About Us</h2>
+        <div class="row">
+            <div class="col-lg-6 text-center">
+                <i class="fas fa-globe-africa fa-5x mb-3"></i>
+                <p class="lead">Empowering students across Nigeria and beyond with innovative online examination tools.</p>
+            </div>
+            <div class="col-lg-6">
+                <div class="d-flex align-items-start mb-3">
+                    <i class="fas fa-book-reader fa-2x mr-3"></i>
+                    <div>
+                        <h3>Our Story</h3>
+                        <p>Welcome to iExam, an innovative platform transforming the learning experience for students. Started in Northern Nigeria, our vision is to extend the power of online examination management to all corners of Nigeria and beyond. We provide a seamless, intuitive, and accessible platform for students to practice and excel in exams.</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start">
+                    <i class="fas fa-bullseye fa-2x mr-3"></i>
+                    <div>
+                        <h3>Our Mission</h3>
+                        <p>To provide educators with powerful, easy-to-use exam management tools that leverage the benefits of online learning. We believe in improving learning outcomes by making the exam process more efficient, fair, and accessible. Join us on this exciting journey to empower students, inspire learning, and shape the future of education. With iExam, the path to academic success is just a click away!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Additional sections like Pricing, Leaderboard Competitions, School Registration, Multilingual Support can be added here as needed -->
+<!-- Pricing Section -->
+<section class="py-5" id="pricing">
+    <div class="container">
+        <h2 class="text-center mb-5">Our Pricing</h2>
+        <div class="row">
+            {% if user.is_authenticated %}
+                {% if user.role == "SA" %}
+                    <!-- Display pricing for School Admins -->
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">School Admin Plan</h5>
+                                <p class="card-text">Dedicated features for managing a school.</p>
+                                <p class="card-text">Price: N20,000/year</p>
+                                <a href="{% url 'payments:initialize_transaction' %}" class="btn btn-primary">Get Started</a>
+                            </div>
+                        </div>
+                    </div>
+                {% elif user.role == "IL" %}
+                    <!-- Display pricing for Independent Learners -->
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Independent Learner Plan</h5>
+                                <p class="card-text">Tailored features for individual learning.</p>
+                                <p class="card-text">Price: N2,000/year</p>
+                                <a href="{% url 'payments:initialize_transaction' %}" class="btn btn-primary">Get Started</a>
+                            </div>
+                        </div>
+                    </div>
+                {% elif user.role == "S" %}
+                    <!-- Display pricing for Students -->
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Student Plan</h5>
+                                <p class="card-text">Learning made easy and affordable.</p>
+                                <p class="card-text">Price: N2,000/year</p>
+                                <a href="{% url 'payments:initialize_transaction' %}" class="btn btn-primary">Get Started</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <!-- Display general pricing information for non-authenticated users -->
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">School Admin Plan</h5>
+                            <p class="card-text">Dedicated features for managing a school.</p>
+                            <p class="card-text">Price: N20,000/year</p>
+                            <a href="{% url 'user_management:login' %}" class="btn btn-primary">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Independent Learner Plan</h5>
+                            <p class="card-text">Tailored features for individual learning.</p>
+                            <p class="card-text">Price: N2,000/year</p>
+                            <a href="{% url 'user_management:login' %}" class="btn btn-primary">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Student Plan</h5>
+                            <p class="card-text">Learning made easy and affordable.</p>
+                            <p class="card-text">Price: N2,000/year</p>
+                            <a href="{% url 'user_management:login' %}" class="btn btn-primary">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more cards for other general plans as well -->
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer style="background-color: #1a237e; color: #ffffff;" class="py-5">
+    <div class="container">
+        <div class="col-md-5 offset-md-4">
+            <i class="fas fa-address-card fa-2x mb-3"></i>
+            <h4 class="text-uppercase">Contacts</h4>
+            <ul class="list-unstyled">
+                <li>08134925177, 08069278540, 08133591900</li>
+                <li>Email: <a href="mailto:iexams123@gmail.com" class="text-white">iexams123@gmail.com</a></li>
+                <li>NTIC,  Ring Road Yankaba, Nasarawa, Kano, Office 21, Ummieta Plaza, Sharada Kano State</li>
+                <!-- Link to Contact Us Page -->
+              
+            </ul>
+        </div>
+        <div class="row text-center mt-4">
+            <div class="col">
+                <p>Follow Us:</p>
+                <!-- Social Media Buttons -->
+                <a href="https://www.facebook.com/profile.php?id=61553246745060" target="_blank" class="btn btn-outline-light btn-social mx-1">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://twitter.com/iexams226205" target="_blank" class="btn btn-outline-light btn-social mx-1">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://www.instagram.com/ibnsulemanjnr/" target="_blank" class="btn btn-outline-light btn-social mx-1">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://wa.me/message/3TPFCLOOHIPYE1" target="_blank" class="btn btn-outline-light btn-social mx-1">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+                <a href="https://t.me/iexams" target="_blank" class="btn btn-outline-light btn-social mx-1">
+                    <i class="fab fa-telegram"></i>
+                </a>
+            </div>
+        </div>
+        <div class="row text-center mt-4">
+            <div class="col">
+                <p>© 2024 All rights reserved | A product of <a href="https://www.ibnsulemantech.com">IBNSULEMAN TECH LTD</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+{% endblock %}

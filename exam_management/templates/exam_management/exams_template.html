@@ -1,0 +1,29 @@
+<!-- exams_template.html -->
+
+{% extends "base_generic.html" %}
+{% block content %}
+<div class="container">
+    <h2>Exams for {{ category_type }} - {{ year }}</h2>
+    {% if exams %}
+        <div class="card-deck">
+            {% for exam in exams %}
+                <div class="card my-3 border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title">{{ exam.name }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">{{ exam.subject.name }}</h6>
+                        <p class="card-text">Duration: {{ exam.duration|stringformat:"i" }} minutes</p>
+                        <p class="card-text">Total Questions: {{ exam.number_of_questions }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'exam_management:start_exam' exam.id %}" class="btn btn-primary">Start Exam</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No exams available for this year.</p>
+    {% endif %}
+</div>
+{% endblock %}

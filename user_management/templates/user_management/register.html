@@ -1,0 +1,46 @@
+{% extends 'base_generic.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+  <h1 class="mb-4">Register</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      {% for field in form %}
+      <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+      {% render_field field class+="form-control" %}
+      {% if field.help_text %}
+      <small class="form-text text-muted">{{ field.help_text }}</small>
+      {% endif %}
+      {% if field.errors %}
+      <div class="alert alert-danger">
+        {{ field.errors|join:", " }}
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+    <button type="submit" class="btn button-custom">Register</button>
+  </form>
+
+  <script>
+    function roleChanged() {
+      var role = document.getElementById('id_role').value;
+      var schoolNameField = document.getElementById('id_school_name').parentElement.parentElement;
+      var schoolAddressField = document.getElementById('id_school_address').parentElement.parentElement;
+
+      if (role === 'SA') {
+        schoolNameField.style.display = 'block';
+        schoolAddressField.style.display = 'block';
+      } else {
+        schoolNameField.style.display = 'none';
+        schoolAddressField.style.display = 'none';
+      }
+    }
+
+    window.onload = function() {
+      document.getElementById('id_role').addEventListener('change', roleChanged);
+      roleChanged();
+    };
+  </script>
+{% endblock %}

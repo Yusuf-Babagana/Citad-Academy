@@ -1,0 +1,26 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="highlight-custom">{{ object.name }}</h1>
+    <p class="lead">Subject: {{ object.subject.name }}</p>
+    <p>Number of Questions: {{ object.number_of_questions }}</p>
+    <p>Duration: {{ object.duration }}</p>
+    <p>Published: {{ object.is_published }}</p>
+
+    <h2 class="services h2">Questions:</h2>
+    {% for qwo in questions_with_options %}
+      <div class="card mb-4">
+          <div class="card-body">
+              <p class="card-text"><strong>Question:</strong> {{ qwo.question.question_text }}</p>
+              <p class="card-text"><strong>Instructions:</strong> {{ qwo.question.instructions }}</p>
+              <ul>
+              {% for option in qwo.options %}
+                <li>{{ option.option_text }} {% if option.is_correct %}(Correct){% endif %}</li>
+              {% endfor %}
+              </ul>
+          </div>
+      </div>
+    {% endfor %}
+</div>
+{% endblock %}

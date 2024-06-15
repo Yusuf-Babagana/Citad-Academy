@@ -1,0 +1,17 @@
+<!-- years_template.html -->
+
+{% extends "base_generic.html" %}
+{% block content %}
+<div class="container">
+    <h2>Available Exam Years for {{ entity_name }} in {{ category_type|title }}</h2>
+    <div class="list-group mt-3">
+        {% for year in years %}
+            <a href="{% url 'exam_management:view_for_exams' category_type=category_type entity_name=entity_name year=year %}" class="list-group-item list-group-item-action">
+                {{ year }}
+            </a>
+        {% empty %}
+            <p>No exam years available for this selection.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

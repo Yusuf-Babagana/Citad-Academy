@@ -1,0 +1,64 @@
+{% extends "base_generic.html" %}
+{% load custom_filters %} <!-- Load the custom template filters, if you've created any -->
+
+{% block content %}
+<div class="container">
+    <h1 class="highlight-custom">My Exams</h1>
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th>Exam Name</th>
+                <th>Category</th> <!-- New column for category -->
+                <th>Subject</th>
+                <th>Number of Questions</th>
+                <th>Duration</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for exam in object_list %}
+            <tr>
+                <td>{{ exam.name }}</td>
+                <td>{{ exam.category.get_category_type_display }} - {{ exam.category.name }} ({{ exam.category.year }})</td>
+                <td>{{ exam.subject.name }}</td>
+                <td>{{ exam.number_of_questions }}</td>
+                <td>{{ exam.duration|format_duration }}</td> <!-- Using the custom filter for formatting duration -->
+                <td>
+                    {% if exam.is_published %}
+                        Published
+                    {% else %}
+                        Unpublished
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'exam_management:exam-detail' exam.id %}" class="btn btn-info btn-sm">View</a>
+                    <a href="{% url 'exam_management:edit_exam' exam.id %}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="{% url 'exam_management:publish_exam' exam.id %}" class="btn btn-sm {% if exam.is_published %}btn-danger{% else %}btn-success{% endif %}">{{ exam.is_published|yesno:"Unpublish,Publish" }}</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7">No exams available.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- Pagination Controls -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endblock %}

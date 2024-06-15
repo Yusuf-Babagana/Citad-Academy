@@ -1,0 +1,16 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="highlight-custom">Question: {{ object.question_text }}</h1>
+    <p><strong>Topic:</strong> {{ object.topic.name }}</p>
+    <p><strong>Subtopic:</strong> {{ object.subtopic.name }}</p>
+    <p><strong>Instructions:</strong> {{ object.instructions }}</p>
+    <h3 class="mt-3">Options:</h3>
+    <ul class="list-group">
+      {% for option in options %}
+        <li class="list-group-item {{ 'list-group-item-success' if option.is_correct }}">{{ option.option_text }} {% if option.is_correct %}<span class="badge bg-success">(Correct Answer)</span>{% endif %}</li>
+      {% endfor %}
+    </ul>
+</div>
+{% endblock %}

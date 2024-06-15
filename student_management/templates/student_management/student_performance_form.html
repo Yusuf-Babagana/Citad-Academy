@@ -1,0 +1,10 @@
+{% extends 'base_generic.html' %}  <!-- Adjust based on your base template -->
+
+{% block content %}
+  <h2>{% if object %}Edit{% else %}Add{% endif %} Student Performance</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
+{% endblock %}

@@ -1,0 +1,52 @@
+<!-- exam_management/templates/exam_management/manual_score_entry.html -->
+
+{% extends "base_generic.html" %}  <!-- Adjust based on your template structure -->
+
+{% block content %}
+  <h2>Enter Manual Score</h2>
+  <form method="post" id="manualScoreForm">
+      {% csrf_token %}
+      <div>
+          {{ form.student.label_tag }} {{ form.student }}
+      </div>
+      <div>
+          {{ form.subject.label_tag }} {{ form.subject }}
+      </div>
+      <div>
+          {{ form.teacher.label_tag }} {{ form.teacher }}
+      </div>
+      <div>
+          {{ form.ca1_score.label_tag }} {{ form.ca1_score }} <small>(Optional)</small>
+      </div>
+      <div>
+          {{ form.ca2_score.label_tag }} {{ form.ca2_score }} <small>(Optional)</small>
+      </div>
+      <div>
+          {{ form.exam_score.label_tag }} {{ form.exam_score }} <small>(Optional)</small>
+      </div>
+      <div>
+          {{ form.total_score.label_tag }} {{ form.total_score }} <small>(Auto-calculated if left blank)</small>
+      </div>
+      <div>
+          {{ form.date_assigned.label_tag }} {{ form.date_assigned }}
+      </div>
+      <button type="submit">Submit</button>
+  </form>
+  <script>
+    // Optional: JavaScript to auto-calculate total score
+    document.getElementById('manualScoreForm').addEventListener('input', function() {
+      // Get the score input values
+      var ca1 = document.querySelector('#id_ca1_score').value || 0;
+      var ca2 = document.querySelector('#id_ca2_score').value || 0;
+      var exam = document.querySelector('#id_exam_score').value || 0;
+
+      // Calculate the total
+      var total = parseInt(ca1, 10) + parseInt(ca2, 10) + parseInt(exam, 10);
+      
+      // Update the total score field only if all the individual fields are filled
+      if(ca1 && ca2 && exam) {
+        document.querySelector('#id_total_score').value = total;
+      }
+    });
+  </script>
+{% endblock %}

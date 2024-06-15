@@ -1,0 +1,27 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Renew Your Subscription</h1>
+    {% for subscription in subscriptions %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ subscription.name }}</h5>
+            <p class="card-text">Duration: {{ subscription.duration }} days</p>
+            <p class="card-text">Cost: ${{ subscription.cost }}</p>
+            <form method="post" action="{% url 'subscription:renew' %}"> <!-- Add action attribute with the URL for the renew view -->
+                {% csrf_token %}
+                <!-- Include hidden fields to pass subscription details -->
+                <input type="hidden" name="subscription_id" value="{{ subscription.id }}">
+                <input type="hidden" name="num_of_subscriptions" value="1"> <!-- Assuming only one subscription for now -->
+                <!-- You can include a field for the coupon code if needed -->
+                <!-- <input type="text" name="coupon_code" placeholder="Enter Coupon Code"> -->
+                <button type="submit" class="btn btn-primary">Choose Plan</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

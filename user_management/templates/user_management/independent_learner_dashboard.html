@@ -1,0 +1,190 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load custom_filters %}
+
+{% block custom_head %}
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'bootstrap/css/styles.css' %}">
+{% endblock custom_head %}
+
+{% block content %}
+
+<!-- Display Current Profile Image if it exists -->
+<div class="profile-image-section">
+    {% if request.user.profile_image %}
+        <img src="{{ request.user.profile_image.url }}" alt="Profile Image" class="profile-image">
+    {% endif %}
+</div>
+
+<!-- Profile Image Upload Form -->
+<form method="post" enctype="multipart/form-data" class="profile-image-form">
+    {% csrf_token %}
+    <div class="form-group">
+        {{ profile_image_form.profile_image.label_tag }}
+        {{ profile_image_form.profile_image }}
+        {% if profile_image_form.profile_image.help_text %}
+            <small class="form-text text-muted">{{ profile_image_form.profile_image.help_text }}</small>
+        {% endif %}
+        {% if profile_image_form.profile_image.errors %}
+            <div class="error">{{ profile_image_form.profile_image.errors }}</div>
+        {% endif %}
+    </div>
+    <button type="submit" name="profile_image_submit" class="btn btn-primary">Update Profile Image</button>
+</form>
+
+</div>
+
+<div class="mb-3">
+    {% if user.has_paid_subscription %}
+        <a href="{% url 'payments:payment_page' %}" class="btn btn-success">Paid</a>
+    {% else %}
+        <a href="{% url 'payments:payment_page' %}" class="btn btn-primary">Pay Now</a>
+    {% endif %}
+</div>
+<div class="container-fluid dashboard-container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Welcome, {{ request.user.username }}!</h1>
+        </div>
+    </div>
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" id="dashboardTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link active" id="exams-tab" data-bs-toggle="tab" href="#exams" role="tab" aria-controls="exams" aria-selected="true">Available Global Exams</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="media-tab" data-bs-toggle="tab" href="#media" role="tab" aria-controls="media" aria-selected="false">Available Global Media</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="analysis-tab" data-bs-toggle="tab" href="#analysis" role="tab" aria-controls="analysis" aria-selected="false">Exam Analysis</a>
+        </li>
+    </ul>
+
+    
+    <div class="tab-content">
+    <div class="tab-pane fade show active" id="availableExams">
+        <h3>Select an Exam Category:</h3>
+        <div class="list-group">
+            {% for category_key in categories_with_global_exams.keys %}
+                <a href="{% url 'exam_management:view_for_years' category_key.0 category_key.1 %}" class="list-group-item list-group-item-action">
+                    {{ category_key.0|title }} - {{ category_key.1 }}
+                </a>
+            {% empty %}
+                <div class="alert alert-info" role="alert">
+                    No global exams are currently available.
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+   
+
+    <div class="tab-pane fade" id="media" role="tabpanel" aria-labelledby="media-tab">
+        {% if available_global_media %}
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for media in available_global_media %}
+                    <div class="col">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ media.title }}</h5>
+                                <!-- Include other media details here if needed -->
+                            </div>
+                            <div class="card-footer">
+                                <a href="{% url 'media_management:view_media' media.id %}" class="btn btn-primary">View Media</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                No global media are currently available.
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="tab-pane fade" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
+        {% if exam_analysis %}
+            <div class="container mt-4">
+                <h3 class="mb-4">Exam Analysis</h3>
+                
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Topic Weaknesses
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Topic</th>
+                                    <th>Incorrect Answers</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for topic, count in exam_analysis.topic_weaknesses.items %}
+                                <tr>
+                                    <td>{{ topic }}</td>
+                                    <td>{{ count }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+    
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Detailed Answers
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Question</th>
+                                    <th>Your Answer</th>
+                                    <th>Correct Answer</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for detail in exam_analysis.detailed_answers %}
+                                <tr>
+                                    <td>{{ detail.question.question_text }}</td>
+                                    <td>{{ detail.student_answer }}</td>
+                                    <td>{{ detail.correct_answer }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+    
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Performance Chart
+                    </div>
+                    <div class="card-body">
+                        <canvas id="topicPercentageScoresChart"></canvas>
+                        <!-- Chart's script will remain as is -->
+                    </div>
+                </div>
+    
+                <div class="card">
+                    <div class="card-header">
+                        Scoring
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Raw Score:</strong> {{ exam_analysis.raw_score }}</p>
+                        <p><strong>Percentage Score:</strong> {{ exam_analysis.percentage_score }}%</p>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-info" role="alert">
+                No exam analysis available at the moment.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

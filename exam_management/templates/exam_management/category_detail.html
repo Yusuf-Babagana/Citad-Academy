@@ -1,0 +1,16 @@
+{% extends "base_generic.html" %}
+{% block content %}
+<div class="container">
+    <h2>{{ category_type|title }} Details</h2>
+    <div class="list-group mt-3">
+        {% for detail in details %}
+            <!-- Update the URL to point to the view_for_years view -->
+            <a href="{% url 'exam_management:view_for_years' category_type=category_type entity_name=detail.name %}" class="list-group-item list-group-item-action">
+                {{ detail.name }}
+            </a>
+        {% empty %}
+            <p>No details available for this category.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

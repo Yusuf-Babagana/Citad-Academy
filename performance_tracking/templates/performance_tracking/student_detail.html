@@ -1,0 +1,20 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+<h1>Scores for {{ student.user.get_full_name }}</h1>
+
+<h2>Exam Scores</h2>
+{% for score in exam_scores %}
+<p>Subject: {{ score.student_exam.exam.subject.name }} - Score: {{ score.score }}</p>
+{% empty %}
+<p>No exam scores available.</p>
+{% endfor %}
+
+<h2>Manual Scores</h2>
+{% for score in manual_scores %}
+<p>Subject: {{ score.subject.name }} - Score: {{ score.total_score }}</p>
+{% empty %}
+<p>No manual scores available.</p>
+{% endfor %}
+
+<button onclick="window.print()">Print this Report</button>
+{% endblock %}

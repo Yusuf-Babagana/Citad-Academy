@@ -1,0 +1,14 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="highlight-custom">Media Management Dashboard - iExam</h1>
+    <div class="dashboard-content">
+        <!-- The rest of your homepage content goes here -->
+        <!-- You might include links to different parts of the media management system, like uploading, viewing, etc. -->
+        <a href="{% url 'media_management:upload' %}" class="btn btn-primary mt-3">Upload Media</a>
+        <a href="{% url 'media_management:view_all' %}" class="btn btn-secondary mt-3">View All Media</a>
+        <!-- Add other relevant links and content as needed -->
+    </div>
+</div>
+{% endblock content %}

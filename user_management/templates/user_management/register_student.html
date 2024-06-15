@@ -1,0 +1,76 @@
+{% extends 'base_generic.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card border-light shadow-lg p-3 mb-5 bg-white rounded">
+        <div class="card-body">
+          <h1 class="mb-4 text-center">Student Registration</h1>
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">
+                {{ form.non_field_errors|join:", " }}
+              </div>
+            {% endif %}
+
+            {% for field in form %}
+              <div class="mb-3">
+                {% if field.name == "school" and user.role == "SA" %}
+                  <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                  <input type="text" readonly class="form-control" id="{{ field.id_for_label }}" value="{{ field.initial }}">
+                  <input type="hidden" name="school" value="{{ field.initial.id }}" />
+                {% else %}
+                  <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                  {% render_field field class+="form-control" %}
+                {% endif %}
+                {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                <div class="alert alert-danger">
+                  {{ field.errors|join:", " }}
+                </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary">Register</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const schoolDropdown = document.getElementById("id_school");  // Assuming this is the ID of your school dropdown
+    
+    // Check if the schoolDropdown exists and is a select element
+    if (schoolDropdown && schoolDropdown.tagName === 'SELECT') {
+      schoolDropdown.addEventListener("change", function() {
+        const schoolId = this.value;
+        
+        // Debug line to check if function gets called
+        console.log("Fetching classes for school:", schoolId);
+  
+        fetch(`/get_classes/?school_id=${schoolId}`)  // Replace with your actual URL
+            .then(response => response.json())
+            .then(data => {
+                const classDropdown = document.getElementById("id_class_name");  // Assuming this is the ID of your class dropdown
+                let classOptions = "<option value=''>Select a class</option>";
+                data.classes.forEach((cls) => {
+                    classOptions += `<option value="${cls.id}">${cls.name}</option>`;
+                });
+                classDropdown.innerHTML = classOptions;
+            });
+      });
+    }
+  });
+  </script>
+{% endblock %}

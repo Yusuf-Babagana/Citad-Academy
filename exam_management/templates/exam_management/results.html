@@ -1,0 +1,31 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5">Exam Results</h1>
+    
+    <div class="border p-4 mb-4">
+        <p><strong>Exam:</strong> {{ student_exam.exam.title }}</p>
+        <p><strong>Score:</strong> {{ student_exam.score }} / {{ questions.count }}</p>
+        <p><strong>Percentage:</strong> {{ student_exam.score|mul:100|div:questions.count }}%</p>
+    </div>
+
+    {% for subject in student_exam.exam.subjects.all %}
+    <h2 class="mb-4">{{ subject.name }}</h2>
+    {% for question, answer in questions|zip:answers %}
+    {% if question.subject == subject %}
+    <div class="border p-4 mb-4">
+        <p><strong>Question:</strong> {{ question.question_text }}</p>
+        <p><strong>Your answer:</strong> {{ answer.get_selected_option_display }}</p>
+        <p><strong>Correct answer:</strong> {{ question.get_correct_option_display }}</p>
+        {% if answer.get_selected_option_display == question.get_correct_option_display %}
+        <p class="text-success">Your answer is correct.</p>
+        {% else %}
+        <p class="text-danger">Your answer is incorrect.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endfor %}
+</div>
+{% endblock content %}

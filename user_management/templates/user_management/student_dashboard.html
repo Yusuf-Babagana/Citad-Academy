@@ -1,0 +1,316 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load custom_filters %}
+
+{% block custom_head %}
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'bootstrap/css/styles.css' %}">
+{% endblock custom_head %}
+
+{% block content %}
+<div class="container">
+    
+    <!-- Display Current Profile Image if it exists -->
+    <div class="profile-image-section">
+        {% if request.user.profile_image %}
+            <img src="{{ request.user.profile_image.url }}" alt="Profile Image" class="profile-image">
+        {% endif %}
+    </div>
+
+    <!-- Profile Image Upload Form -->
+    <form method="post" enctype="multipart/form-data" class="profile-image-form">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ profile_image_form.profile_image.label_tag }}
+            {{ profile_image_form.profile_image }}
+            {% if profile_image_form.profile_image.help_text %}
+                <small class="form-text text-muted">{{ profile_image_form.profile_image.help_text }}</small>
+            {% endif %}
+            {% if profile_image_form.profile_image.errors %}
+                <div class="error">{{ profile_image_form.profile_image.errors }}</div>
+            {% endif %}
+        </div>
+        <button type="submit" name="profile_image_submit" class="btn btn-primary">Update Profile Image</button>
+    </form>
+
+</div>
+
+    <h1>Welcome, {{ request.user.username }}!</h1>
+    <div class="mb-3">
+        {% if user.has_paid_subscription %}
+            <a href="{% url 'payments:payment_page' %}" class="btn btn-success">Paid</a>
+        {% else %}
+            <a href="{% url 'payments:payment_page' %}" class="btn btn-primary">Pay Now</a>
+        {% endif %}
+    </div>
+
+    <!-- Display the school name -->
+    <div class="mb-3">
+        <h3>School: {{ school.name }}</h3>
+    </div>
+    
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#availableExams">Available Exams</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#leaderboard">Leaderboard</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="analysis-tab" data-bs-toggle="tab" href="#analysis" role="tab" aria-controls="analysis" aria-selected="false">Exam Analysis</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#subjects">Subjects</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#media">Media</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="availableExams">
+            <h3>Select an Exam Category:</h3>
+            <div class="list-group">
+                {% for category_type in categories %}
+                    <a href="{% url 'exam_management:view_category_detail' category_type %}" class="list-group-item list-group-item-action">
+                        {{ category_type|title }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+        <div class="tab-pane fade" id="leaderboard">
+            <div class="accordion" id="accordionLeaderboard">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingLeaderboards">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLeaderboards" aria-expanded="false" aria-controls="collapseLeaderboards">
+                            Leaderboards
+                        </button>
+                    </h2>
+                    <div id="collapseLeaderboards" class="accordion-collapse collapse" aria-labelledby="headingLeaderboards" data-bs-parent="#accordionLeaderboard">
+                        <div class="accordion-body">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    Class Leaderboards
+                                </div>
+                                <div class="card-body">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Class</th>
+                                                <th>Student</th>
+                                                <th>Score</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for leaderboard in class_leaderboards %}
+                                                <tr>
+                                                    <td>{{ leaderboard.classroom.name }}</td>
+                                                    <td>{{ leaderboard.student.user.username }}</td>
+                                                    <td>{{ leaderboard.score }}</td>
+                                                </tr>
+                                            {% empty %}
+                                                <tr>
+                                                    <td colspan="3">No class leaderboard entries at this time.</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+        
+                            <div class="card">
+                                <div class="card-header">
+                                    Subject Leaderboards
+                                </div>
+                                <div class="card-body">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Subject</th>
+                                                <th>Student</th>
+                                                <th>Score</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for leaderboard in subject_leaderboards %}
+                                                <tr>
+                                                    <td>{{ leaderboard.subject.name }}</td>
+                                                    <td>{{ leaderboard.student.user.username }}</td>
+                                                    <td>{{ leaderboard.score }}</td>
+                                                </tr>
+                                            {% empty %}
+                                                <tr>
+                                                    <td colspan="3">No subject leaderboard entries at this time.</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="analysis" role="tabpanel" aria-labelledby="analysis-tab">
+            {% if exam_analysis %}
+            <div class="container mt-4">
+                <h3 class="mb-4">Exam Analysis</h3>
+                
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Topic Weaknesses
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Topic</th>
+                                    <th>Incorrect Answers</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for topic, count in exam_analysis.topic_weaknesses.items %}
+                                <tr>
+                                    <td>{{ topic }}</td>
+                                    <td>{{ count }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Detailed Answers
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Question</th>
+                                    <th>Your Answer</th>
+                                    <th>Correct Answer</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for detail in exam_analysis.detailed_answers %}
+                                <tr>
+                                    <td>{{ detail.question.question_text }}</td>
+                                    <td>{{ detail.student_answer }}</td>
+                                    <td>{{ detail.correct_answer }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Topic Performance Chart
+                    </div>
+                    <div class="card-body">
+                        <canvas id="topicPercentageScoresChart"></canvas>
+                        <!-- Chart's script will remain as is -->
+                    </div>
+                </div>
+            
+                <div class="card mb-4">
+                    <div class="card-header">
+                        Scoring
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Raw Score:</strong> {{ exam_analysis.raw_score }}</p>
+                        <p><strong>Percentage Score:</strong> {{ exam_analysis.percentage_score }}%</p>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-warning" role="alert">
+                No exam analysis available at the moment.
+            </div>
+            {% endif %}
+        </div>
+        <div class="tab-pane fade" id="subjects">
+            <div class="card-deck">
+                {% for subject in subjects %}
+                <div class="card my-3 border-info">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="card-title">{{ subject.name }}</h5>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="mt-3">You haven't selected any subjects yet.</p>
+                {% endfor %}
+            </div>
+        
+            <div class="card my-3">
+                <h5 class="card-header bg-primary text-white">Update Your Subjects</h5>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for field in subject_selection_form %}
+                        <div class="form-group">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field|add_class:"form-control" }}
+                            {% for error in field.errors %}
+                                <div class="alert alert-danger mt-2">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary">Update Subjects</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="media">
+            <div class="card my-3">
+                <h5 class="card-header bg-primary text-white">Available Media</h5>
+                <div class="card-body">
+                    {% for media in media_files %}
+                    <div class="d-flex align-items-center justify-content-between my-2">
+                        <h5 class="mb-0">
+                            <a href="{% url 'media_management:view_media' media.id %}">{{ media.title }}</a>
+                        </h5>
+                        <a href="{{ media.file.url }}" download class="btn btn-info">Download</a>
+                    </div>
+                    <div>
+                        {% if media.file_type == 'pdf' %}
+                        <object data="{{ media.file.url }}" type="application/pdf" width="300" height="200"></object>
+                        {% elif media.file_type == 'image' %}
+                        <img src="{{ media.file.url }}" alt="{{ media.title }}" width="300">
+                        {% elif media.file_type == 'video' %}
+                        <video controls width="300">
+                            <source src="{{ media.file.url }}" type="video/mp4">
+                        </video>
+                        {% endif %}
+                    </div>
+                    <div class="comments-section">
+                        <h5>Leave a Comment:</h5>
+                        <form action="{% url 'media_management:view_media' media.id %}" method="post">
+                            {% csrf_token %}
+                            <textarea name="comment" rows="4" cols="50" placeholder="Write your comment here..."></textarea>
+                            <input type="submit" value="Submit Comment" class="btn btn-primary">
+                        </form>
+                    </div>
+                    {% empty %}
+                    <p class="mt-3">No media available at this time.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block custom_js %}
+    <!-- Bootstrap JS, Popper.js -->
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+{% endblock custom_js %}

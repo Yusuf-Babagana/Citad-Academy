@@ -1,0 +1,12 @@
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="A"> <!-- Hidden input for approval action -->
+    <label>Select specific requests to approve:</label>
+    {% for request in pending_requests %}
+        <div>
+            <input type="checkbox" name="selected_requests" value="{{ request.id }}">
+            {{ request }} <!-- Display the request in the way you prefer -->
+        </div>
+    {% endfor %}
+    <button type="submit">Submit</button>
+</form>

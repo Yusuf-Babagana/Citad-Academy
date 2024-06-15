@@ -1,0 +1,19 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+  <h2>{{ exam.subject.name }}</h2>
+  <h3>{{ exam.ExamDateAndTime }}</h3>
+  {% for question in questions %}
+    <div>
+      <p>{{ question.question_text }}</p>
+      <ul>
+        <li>{{ question.option1 }}</li>
+        <li>{{ question.option2 }}</li>
+        <li>{{ question.option3 }}</li>
+        <li>{{ question.option4 }}</li>
+      </ul>
+    </div>
+  {% empty %}
+    <p>No questions for this exam.</p>
+  {% endfor %}
+{% endblock %}

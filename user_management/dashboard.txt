@@ -1,0 +1,187 @@
+Incorporate the updates/changes into the existing school admin dashboard view:
+class SchoolAdminDashboardView(View):
+    @method_decorator(login_required(login_url='/user_management/login/'))
+    def get(self, request, *args, **kwargs):
+        school = request.user.school_admin.school
+        school_form = SchoolForm(instance=school)
+        class_form = ClassForm()
+        subject_form = SubjectForm(school=school)
+        assign_teacher_form = AssignTeacherToClassForm(school=school)
+        assign_student_form = AssignStudentToClassAndSubjectsForm(school=school)  # Pass the school instance to the form
+
+       # Fetch teachers and students related to the school
+        teachers = Teacher.objects.filter(user__school=school, is_approved=True)
+        students = Student.objects.filter(user__school=school)
+
+       # Fetch unique classroom IDs that have a leaderboard entry
+        class_ids = Leaderboard.objects.filter(classroom__in=school.classes.all()).values_list('classroom', flat=True).distinct()
+
+        # Fetch the corresponding Leaderboard objects
+        class_leaderboards = Leaderboard.objects.filter(classroom__in=class_ids)
+
+        # Fetch unique subject IDs that have a leaderboard entry
+        subject_ids = Leaderboard.objects.filter(subject__in=Subject.objects.filter(class_related__in=school.classes.all())).values_list('subject', flat=True).distinct()
+
+        # Fetch the corresponding Leaderboard objects
+        subject_leaderboards = Leaderboard.objects.filter(subject__in=subject_ids)
+
+        return render(request, 'user_management/school_admin_dashboard.html', 
+                      {'school_form': school_form, 
+                       'class_form': class_form, 
+                       'subject_form': subject_form,
+                       'assign_teacher_form': assign_teacher_form,
+                       'assign_student_form': assign_student_form,  # add this 
+                       'class_leaderboards': class_leaderboards,
+                       'subject_leaderboards': subject_leaderboards,
+                       'teachers': teachers,  # add this
+                       'students': students})  # and this
+
+
+We also need to incorporate the updates/changes into the postmethod of the school admin dashboard view:
+
+@method_decorator(login_required(login_url='/user_management/login/'))
+    def post(self, request, *args, **kwargs):
+        school = request.user.school_admin.school  # Add this line
+        school_form = SchoolForm(request.POST, instance=school)
+        class_form = ClassForm(request.POST)
+        subject_form = SubjectForm(request.POST, school=school)
+        assign_teacher_form = AssignTeacherToClassForm(request.POST, school=school)
+        assign_student_form = AssignStudentToClassAndSubjectsForm(request.POST, school=school)  # Pass the school instance to the form
+
+        if 'school_submit' in request.POST:
+            if school_form.is_valid():
+                school_form.save()
+                messages.success(request, 'School updated successfully!')
+                return redirect('user_management:school-admin-dashboard')
+        
+        elif 'class_submit' in request.POST:
+            if class_form.is_valid():
+                class_instance = class_form.save(commit=False)
+                class_instance.school = request.user.school_admin.school
+                class_instance.save()
+                messages.success(request, 'Class created successfully!')
+                return redirect('user_management:school-admin-dashboard')
+        
+        elif 'subject_submit' in request.POST:
+            if subject_form.is_valid():
+                subject_form.save()
+                messages.success(request, 'Subject created successfully!')
+                return redirect('user_management:school-admin-dashboard')
+
+        elif 'approve_submit' in request.POST:
+            if approval_form.is_valid():
+                enrollment_request = EnrollmentRequest.objects.get(id=request.POST.get('request_id'))
+                enrollment_request.status = approval_form.cleaned_data['status']
+                enrollment_request.save()
+
+                if enrollment_request.status == 'A':
+                    if enrollment_request.teacher is not None:
+                        teacher = Teacher.objects.get(user=enrollment_request.teacher.user)
+                        teacher.is_approved = True
+                        teacher.user.school = request.user.school_admin.school
+                        teacher.user.save()
+                        teacher.save()
+                    elif enrollment_request.student is not None:
+                        student = Student.objects.get(user=enrollment_request.student.user)
+                        student.user.school = request.user.school_admin.school
+                        student.user.save()
+                
+                messages.success(request, f'Enrollment request for {enrollment_request.student.user.username if enrollment_request.student else enrollment_request.teacher.user.username} has been updated.')
+                return redirect('user_management:school-admin-dashboard')
+        
+        elif 'assign_teacher_submit' in request.POST:
+            if assign_teacher_form.is_valid():
+                teacher = assign_teacher_form.cleaned_data['teacher']
+                classes = assign_teacher_form.cleaned_data['classes']
+                teacher.classes.add(classes)
+                messages.success(request, 'Teacher assigned to class successfully!')
+                return redirect('user_management:school-admin-dashboard')
+            
+        elif 'assign_student_submit' in request.POST:
+            if assign_student_form.is_valid():
+                student = assign_student_form.cleaned_data['student']
+                class_obj = assign_student_form.cleaned_data['class_obj']
+                subjects = assign_student_form.cleaned_data['subjects']
+
+                # Assign the student to the class and the subjects
+                student.enrolled_class = class_obj
+                student.save()
+
+                subject_combination, created = SubjectCombination.objects.get_or_create(student=student)
+                subject_combination.subjects.set(subjects)
+
+                messages.success(request, 'Student assigned to class and subjects successfully!')
+                return redirect('user_management:school-admin-dashboard')
+            
+        return render(request, 'user_management/school_admin_dashboard.html', 
+                    {'school_form': school_form, 
+                    'class_form': class_form, 
+                    'subject_form': subject_form, 
+                    'assign_teacher_form': assign_teacher_form,
+                    })
+
+
+exam_management view
+
+class StudentExamStartView(View):
+    def get(self, request, exam_id):
+        exam = Exam.objects.get(pk=exam_id)
+        student = Student.objects.get(user=request.user)
+        student_exam, _ = StudentExam.objects.get_or_create(student=student, exam=exam)
+        exam_attempt = ExamAttempt.objects.create(student_exam=student_exam, start_time=timezone.now()) # Set the start time directly during creation
+        return redirect('exam_management:attempt_exam', exam_id=exam_id, attempt_id=exam_attempt.id)
+    
+class StudentExamAttemptView(View):
+    def get(self, request, exam_id, attempt_id, question_index=0):
+        try:
+            exam_attempt = ExamAttempt.objects.prefetch_related('questions__options').get(pk=attempt_id, student_exam__student__user=request.user, student_exam__exam_id=exam_id)
+            questions = exam_attempt.questions.all()
+            current_question = questions[int(question_index)]
+            is_last_question = int(question_index) == exam_attempt.questions.count() - 1
+            
+            # Fetching the duration (as a timedelta) and start time
+            duration = exam_attempt.student_exam.exam.duration
+            start_time = exam_attempt.start_time
+            
+            # Calculating the time remaining
+            time_elapsed = timezone.now() - start_time
+            time_remaining = duration - time_elapsed
+            
+            # Converting to seconds for easier handling in the frontend
+            time_remaining_seconds = time_remaining.total_seconds()
+            
+            return render(request, 'exam_management/exam_attempt.html', {'time_remaining': time_remaining_seconds, 'questions': questions, 'current_question': current_question, 'attempt_id': attempt_id, 'exam_id': exam_id, 'question_index': question_index, 'is_last_question': is_last_question})
+        except ExamAttempt.DoesNotExist:
+            return HttpResponse("Exam attempt does not exist", status=404)
+
+    def post(self, request, exam_id, attempt_id, question_index=0):
+        selected_option_id = request.POST.get('selected_option')
+        exam_attempt = ExamAttempt.objects.get(pk=attempt_id, student_exam__student__user=request.user, student_exam__exam_id=exam_id)
+        current_question = exam_attempt.questions.all()[int(question_index)]
+        student_answer_option = Option.objects.get(pk=selected_option_id)
+
+        student_exam_answer, created = StudentExamAnswer.objects.get_or_create(
+            student_exam=exam_attempt.student_exam,
+            question=current_question,
+            defaults={'student_answer': student_answer_option}
+        )
+        if not created:
+            student_exam_answer.student_answer = student_answer_option
+            student_exam_answer.save()
+
+        next_question_index = int(question_index) + 1
+        print(f"Next Question Index: {next_question_index}")  # Debugging Statement
+        print(f"Total Questions: {exam_attempt.questions.count()}")  # Debugging Statement
+        if next_question_index > exam_attempt.questions.count() - 1:
+            print("Attempting to complete exam...")  # Debugging Statement
+            exam_attempt.current_question_index = next_question_index
+            exam_attempt.complete_attempt()
+            return redirect('exam_management:view_score', exam_id=exam_id, attempt_id=attempt_id)
+        return redirect('exam_management:attempt_exam', exam_id=exam_id, attempt_id=attempt_id, question_index=next_question_index)
+    
+class StudentExamScoreView(View):
+    def get(self, request, exam_id, attempt_id):  # Include attempt_id here
+        exam_attempt = ExamAttempt.objects.get(pk=attempt_id, student_exam__student__user=request.user, student_exam__exam_id=exam_id)
+        raw_score, percentage_score = exam_attempt.calculate_score()
+        return render(request, 'exam_management/exam_score.html', {'score': raw_score, 'percentage_score': percentage_score})
+
