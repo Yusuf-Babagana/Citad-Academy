@@ -250,8 +250,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # SMTP server for Gmail
 EMAIL_PORT = 587  # Port for sending email
 EMAIL_USE_TLS = True  # Use TLS
-EMAIL_HOST_USER = 'ibnsulemanjnr@gmail.com'  
-EMAIL_HOST_PASSWORD = 'suledtrust' 
+EMAIL_HOST_USER = 'ibnsulemanjnr@gmail.com'
+EMAIL_HOST_PASSWORD = 'suledtrust'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -293,7 +293,7 @@ TINYMCE_DEFAULT_CONFIG = {
     'toolbar1': '''
         fullscreen preview bold italic underline | fontselect,
         fontsizeselect | forecolor backcolor | alignleft alignright |
-        aligncenter alignjustify | numlist bullist outdent indent | 
+        aligncenter alignjustify | numlist bullist outdent indent |
         table | link image media | codesample |
         tiny_mce_wiris_formulaEditor tiny_mce_wiris_formulaEditorChemistry
         ''',  # Ensure Wiris buttons are correctly identified
