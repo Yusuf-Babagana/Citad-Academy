@@ -19,7 +19,7 @@ urlpatterns = [
         path('api/payments/', include('payments.api_urls')),
         path('api/subscription/', include('subscription.api_urls')),
     ])),
-    path('resource/', include(('resource.urls', 'resource'), namespace='resource')),
+    path('resource/', include('resource.urls', namespace='resource')),
     path('', include('user_management.urls', namespace='user_management_web')),
     path('class_management/', include('class_management.urls', namespace='class_management_web')),
     path('user_management/', include(('user_management.urls', 'user'), namespace='user_web')),
