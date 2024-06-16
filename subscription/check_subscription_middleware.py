@@ -38,7 +38,6 @@ class CheckUserSubscription(MiddlewareMixin):
     def build_allowed_paths(self):
         allowed_paths = [
             reverse('user_management:index'),
-            reverse('resource:resource_list'),
             reverse('user_management:logout'),
             reverse('user_management:get_started'),
             reverse('user_management:take_tour'),
