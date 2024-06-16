@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'markdownx',
-    'resource',
+    # 'resource',
     'payments',
     'subscription',
     'tinymce',
