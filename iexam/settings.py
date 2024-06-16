@@ -32,7 +32,7 @@ CELERY_TIMEZONE = 'UTC'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["iexam.pythonanywhere.com"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
