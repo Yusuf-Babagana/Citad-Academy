@@ -43,7 +43,6 @@ class CheckUserSubscription(MiddlewareMixin):
             reverse('user_management:get_started'),
             reverse('user_management:take_tour'),
             reverse('user_management:video_tour'),
-            reverse('resource:contact'),
             reverse('payments:initialize_transaction'),
             reverse('payments:payment_page'),
             reverse('admin:index'),
