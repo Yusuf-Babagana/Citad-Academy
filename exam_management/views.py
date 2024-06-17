@@ -54,6 +54,8 @@ import mammoth
 from django.core.files.storage import default_storage
 import os
 import tempfile
+from django.db.models import Min
+
 
 class ExamList(ListView):
     model = Exam
@@ -97,7 +99,7 @@ def view_for_exams(request, category_type, entity_name, year):
 
 def view_category_detail(request, category_type):
     # Fetch all unique names under the selected category_type
-    details = ExamCategory.objects.filter(category_type=category_type).distinct('name')
+    details = ExamCategory.objects.filter(category_type=category_type).values('name').annotate(min_id=Min('id')).order_by('name')
 
     return render(request, 'exam_management/category_detail.html', {
         'category_type': category_type,
