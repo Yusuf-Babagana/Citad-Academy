@@ -19,14 +19,14 @@ from tinymce.models import HTMLField
 
 class ExamCategory(models.Model):
     CATEGORY_CHOICES = [
-        ('UNI', 'University'),
+        ('CITAD', 'CENTER FOR INFORMATION TECHNOLOGY AND DEVELOPMENT'),
         ('POLY', 'Polytechnic'),
         ('COE', 'College of Education'),
         ('WAEC', 'WAEC'),
         ('NECO', 'NECO'),
         ('JAMB', 'JAMB'),
     ]
-    category_type = models.CharField(max_length=4, choices=CATEGORY_CHOICES, default='UNI')
+    category_type = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default='CITAD')
     name = models.CharField(max_length=255)  # e.g., Name of the university, subject for WAEC/NECO, or year for JAMB
     year = models.IntegerField(null=True, blank=True)  # Year of the exam, applicable for all categories
 
