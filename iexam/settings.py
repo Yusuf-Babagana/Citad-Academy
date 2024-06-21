@@ -273,7 +273,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-TINYMCE_JS_URL = 'https://cdn.tiny.cloud/1/no-api-key/tinymce/7/tinymce.min.js'
+TINYMCE_JS_URL = 'https://cdn.tiny.cloud/1/wtvyddp8vbf93fs3p0qosbhmvp0c78612suavj3oj4f1us95/tinymce/7/tinymce.min.js'
 TINYMCE_COMPRESSOR = False
 
 TINYMCE_DEFAULT_CONFIG = {
